@@ -68,5 +68,7 @@ class Event(BaseTable):
         back_populates="events"
     )
 
+    added_by_admin: Mapped[str] = mapped_column(String(20))
+
 
 BaseTable.metadata.create_all(engine)
