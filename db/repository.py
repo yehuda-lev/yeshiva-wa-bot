@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import exists
+from sqlalchemy import exists, func
 
 from db.tables import (get_session, WaUser, Event, EventType)
 
@@ -116,3 +116,58 @@ def create_event(*, type_event: EventType, date: datetime.date, wa_id: str, adde
         session.add(event)
         session.commit()
         return event.id
+
+
+# admin
+
+# admin
+
+
+def get_all_users() -> dict[str, tuple[str, int]]:
+    """
+    Get all users
+    Returns:
+         dict[wa_id: tuple[name, id]]
+    """
+
+    with get_session() as session:
+        users = session.query(WaUser)
+        dict_users = {}
+        for user in users:
+            dict_users.update({user.wa_id: (user.name, user.id)})
+
+        return dict_users
+
+
+# users
+
+# users
+
+def get_events_count_by_wa_id(*, wa_id: str, type_event: EventType = None, date: datetime.date = None) -> int:
+    """
+    Get count events of wa user
+    Args:
+        wa_id: The WaUser ID of the event
+        type_event: The type of the event (shachris/arvit...), default None
+        date: The date of the event, default None
+    Returns:
+         count events
+    """
+
+    with get_session() as session:
+        user = session.query(WaUser).filter(WaUser.wa_id == wa_id).first()
+
+        return session.query(
+            func.count(Event.id)
+            .filter(Event.by_wa_user_id == user.id)
+            .filter(  # filter date
+                Event.date == date
+                if date is not None
+                else True,
+            )
+            .filter(  # filter type
+                Event.type == type_event
+                if type_event is not None
+                else True,
+            )
+        ).scalar()
