@@ -1,12 +1,13 @@
 import datetime
 from sqlalchemy import exists, func
 
-from db.tables import (get_session, WaUser, Event, EventType)
+from db.tables import (get_session, WaUser, Event)
+from data import modules
 
+#  wa user
 
 #  wa user
 
-#  wa user
 
 def is_wa_user_exists(*, wa_id: str) -> bool:
     """
@@ -74,7 +75,7 @@ def create_user(*, wa_id: str, name: str, admin: bool = False) -> int:
 
 # event
 
-def get_event(*, wa_id: str, type_event: EventType, date: datetime.date) -> Event | None:
+def get_event(*, wa_id: str, type_event: modules.EventType, date: datetime.date) -> Event | None:
     """
     Get event
     Args:
@@ -97,7 +98,7 @@ def get_event(*, wa_id: str, type_event: EventType, date: datetime.date) -> Even
         )
 
 
-def create_event(*, type_event: EventType, date: datetime.date, wa_id: str, added_by: str) -> int:
+def create_event(*, type_event: modules.EventType, date: datetime.date, wa_id: str, added_by: str) -> int:
     """
     Create event
     Args:
@@ -143,7 +144,7 @@ def get_all_users() -> dict[str, tuple[str, int]]:
 
 # users
 
-def get_events_count_by_wa_id(*, wa_id: str, type_event: EventType = None, date: datetime.date = None) -> int:
+def get_events_count_by_wa_id(*, wa_id: str, type_event: modules.EventType = None, date: datetime.date = None) -> int:
     """
     Get count events of wa user
     Args:

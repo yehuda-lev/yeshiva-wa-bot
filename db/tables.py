@@ -1,16 +1,10 @@
 from __future__ import annotations
 import datetime
 from contextlib import contextmanager
-from enum import Enum, auto
 from sqlalchemy import (String, create_engine, ForeignKey)
 from sqlalchemy.orm import (Mapped, mapped_column, DeclarativeBase, sessionmaker, relationship)
 
-
-class EventType(Enum):
-    """Type of the event"""
-    SHACHRIS = auto()
-    ARVIT = auto()
-    SEDER_GIMEL = auto()
+from data import modules
 
 
 engine = create_engine(
@@ -60,7 +54,7 @@ class Event(BaseTable):
     __tablename__ = "event"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    type: Mapped[EventType]
+    type: Mapped[modules.EventType]
     date: Mapped[datetime.date]
 
     by_wa_user_id: Mapped[int | None] = mapped_column(ForeignKey("wa_user.id"))

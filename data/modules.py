@@ -4,6 +4,14 @@ from enum import Enum, auto
 from pywa import types
 
 
+class EventType(str, Enum):
+    """Type of the event"""
+    SHACHRIS = auto()
+    SEDER_ALEF = auto()
+    SEDER_BET = auto()
+    SEDER_GIMEL = auto()
+
+
 class Option(str, Enum):
 
     # USERS
