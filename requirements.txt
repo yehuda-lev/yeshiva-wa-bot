@@ -1,4 +1,4 @@
-pywa~=1.13.0
+pywa==1.14.0
 uvicorn~=0.25.0
 fastapi~=0.108.0
 SQLAlchemy~=2.0.23

@@ -55,7 +55,7 @@ def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseO
             title='test flow',
             flow_id=774420634511632,
             flow_action_type=flows.FlowActionType.NAVIGATE,
-            flow_token=f'choose_date_and_type_{cbs.from_user.wa_id}',
+            flow_token=f'get_event_specific_{cbs.from_user.wa_id}',
             mode=flows.FlowStatus.DRAFT,
             flow_action_screen='choose_date_and_type',
             flow_action_payload={
@@ -65,3 +65,31 @@ def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseO
             }
         )
     )
+
+
+# admin
+
+def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
+    cbs.mark_as_read()
+
+    is_create = cbs.data.choose == modules.Option.CREATE_EVENTS
+
+    cbs.reply(
+        text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
+        buttons=types.FlowButton(
+            title='open',
+            flow_id=774420634511632,
+            flow_action_type=flows.FlowActionType.NAVIGATE,
+            flow_token=f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}',
+            mode=flows.FlowStatus.DRAFT,
+            flow_action_screen='choose_date_and_type',
+            flow_action_payload={
+                "welcome_user": f"ברוך הבא {cbs.from_user.name}",
+                "is_event_type_required": True,
+                "is_date_required": True,
+                # "default_date": str(int(datetime.datetime.today().timestamp())),
+                # "default_date": datetime.datetime.today().timestamp(),
+            }
+        )
+    )
+
