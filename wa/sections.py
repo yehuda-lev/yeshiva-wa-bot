@@ -5,6 +5,7 @@ from pywa.types import flows
 
 from db import repository
 from data import modules
+from wa import listener
 
 
 def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
@@ -93,3 +94,62 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
         )
     )
 
+
+def add_and_remove_users(
+        _: WhatsApp, cbs:
+        types.CallbackSelection[modules.ChooseOption] | types.CallbackButton[modules.ChooseOption]):
+
+    wa_id = cbs.from_user.wa_id
+
+    callback_data = cbs.data.choose
+
+    cbs.mark_as_read()
+
+    add_users = callback_data == modules.Option.ADD_USERS or callback_data == modules.Option.ADD_ADMIN
+
+    is_admin = None
+    if callback_data == modules.Option.ADD_ADMIN:
+        is_admin = True
+    elif callback_data == modules.Option.REMOVE_ADMIN:
+        is_admin = False
+
+    # add listener
+    listener.add_listener(
+        wa_id=wa_id,
+        data={
+            "add_users": True if add_users else False,
+            "admin": is_admin
+        }
+    )
+
+    text_admin = None
+    match callback_data:
+        case modules.Option.ADD_USERS:
+            text = "אנא שלח לי את האנשי קשר שברצונך להוסיף"
+            text_admin = "להוספת מנהל"
+
+        case modules.Option.REMOVE_USERS:
+            text = "אנא שלח לי את האנשי קשר שברצונך להסיר"
+            text_admin = "להסרת מנהל"
+
+        case modules.Option.ADD_USERS:
+            text = "אנא שלח לי את האנשי קשר שברצונך להוסיף לניהול"
+
+        case modules.Option.REMOVE_USERS:
+            text = "אנא שלח לי את האנשי קשר שברצונך להסיר מהניהול"
+        case _:
+            return
+
+    buttons = [
+        types.Button(title="ביטול", callback_data=modules.ChooseOption(choose=modules.Option.CANCEL))
+    ]
+    if is_admin is not None:
+        buttons.append(
+            types.Button(title=text_admin, callback_data=modules.ChooseOption(
+                choose=modules.Option.ADD_ADMIN if is_admin else modules.Option.REMOVE_ADMIN))
+        )
+
+    cbs.reply(
+        text=text,
+        buttons=buttons
+    )

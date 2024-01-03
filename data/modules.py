@@ -23,6 +23,11 @@ class Option(str, Enum):
     CREATE_EVENTS = auto()
     REMOVE_EVENTS = auto()
     ADD_USERS = auto()
+    REMOVE_USERS = auto()
+    ADD_ADMIN = auto()
+    REMOVE_ADMIN = auto()
+
+    CANCEL = auto()
 
 
 @dataclass(frozen=True, slots=True)

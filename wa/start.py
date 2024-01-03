@@ -1,7 +1,10 @@
+from pprint import pprint
+
 from pywa import WhatsApp, types
 
 from db import repository
 from data import modules
+from wa import listener
 
 
 def send_welcome(_: WhatsApp, msg: types.Message):
@@ -64,3 +67,22 @@ def send_welcome(_: WhatsApp, msg: types.Message):
             sections=sections
         )
     )
+
+
+def handle_contact(_: WhatsApp, msg: types.Message):
+    wa_id = msg.from_user.wa_id
+
+    get_data = listener.user_id_to_state[wa_id]
+
+    is_admin = get_data["admin"]
+    admin = True if is_admin else False
+
+    pprint(msg)
+    for contact in msg.contacts:
+        for number in contact.phones:
+            phone = number.wa_id if number.wa_id else number.phone
+            if not repository.is_wa_user_exists(wa_id=phone):
+                print(phone, contact.name.formatted_name, admin)
+                repository.create_user(wa_id=phone, name=contact.name.formatted_name, admin=admin)
+
+    listener.remove_listener(wa_id=wa_id)

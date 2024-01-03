@@ -1,7 +1,7 @@
 from pywa import handlers, filters, WhatsApp, types
 
 from db import repository
-from wa import start, sections, handale_flows
+from wa import start, sections, handale_flows, listener
 from data import modules
 
 
@@ -20,6 +20,13 @@ HANDLERS = [
         filter_exists,
         filters.text,
         filters.not_(filters.text.is_command)
+    ),
+
+    handlers.MessageHandler(
+        start.handle_contact,
+        filter_exists,
+        filters.contacts,
+        lambda _, msg: listener.status_answer(wa_id=msg.from_user.wa_id)
     ),
 
     # callback selection
@@ -44,13 +51,15 @@ HANDLERS = [
     # admin
     handlers.CallbackSelectionHandler(
         sections.add_and_remove_events,
-        lambda _, cbs: cbs.data.choose == modules.Option.CREATE_EVENTS,
+        lambda _, cbs: (cbs.data.choose == modules.Option.CREATE_EVENTS
+                        or cbs.data.choose == modules.Option.REMOVE_EVENTS),
         factory_before_filters=True,
         factory=modules.ChooseOption,
     ),
     handlers.CallbackSelectionHandler(
-        sections.add_and_remove_events,
-        lambda _, cbs: cbs.data.choose == modules.Option.REMOVE_EVENTS,
+        sections.add_and_remove_users,
+        lambda _, cbs: (cbs.data.choose == modules.Option.ADD_USERS
+                        or cbs.data.choose == modules.Option.REMOVE_USERS),
         factory_before_filters=True,
         factory=modules.ChooseOption,
     ),
@@ -64,4 +73,14 @@ HANDLERS = [
     handlers.FlowCompletionHandler(
         handale_flows.get_completion_flow,
     ),
+
+    # callback button
+    handlers.CallbackButtonHandler(
+        sections.add_and_remove_users,
+        lambda _, cbd: (cbd.data.choose == modules.Option.ADD_ADMIN
+                        or cbd.data.choose == modules.Option.ADD_ADMIN),
+        factory_before_filters=True,
+        factory=modules.ChooseOption,
+
+    )
 ]
