@@ -131,6 +131,28 @@ def create_event(*, type_event: modules.EventType, date: datetime.date, wa_id: s
         return event.id
 
 
+def del_event(*, wa_id: str, type_event: modules.EventType, date: datetime.date) -> None:
+    """
+    Del event
+    Args:
+        wa_id: The WaUser ID of the event
+        type_event: The type of the event (shachris/arvit...)
+        date: The date of the event
+    Returns:
+         None
+    """
+
+    with get_session() as session:
+        user = session.query(WaUser).filter(WaUser.wa_id == wa_id).first()
+
+        return (
+            session.query(Event)
+            .where(Event.date == date)
+            .where(Event.type == type_event)
+            .where(Event.by_wa_user_id == user.id)
+            .delete()
+        )
+
 # admin
 
 # admin

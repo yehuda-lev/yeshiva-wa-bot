@@ -1,4 +1,4 @@
-from pywa import WhatsApp, types, utils
+from pywa import WhatsApp, types, utils, errors
 from pywa.types import flows
 from pprint import pprint
 
@@ -39,7 +39,6 @@ managing_dates_events_and_users = types.FlowJSON(
             data=[
                 welcome_user := flows.ScreenData(key="welcome_user", example="hello john"),
                 is_event_type_required := flows.ScreenData(key="is_event_type_required", example=True),
-                is_date_required := flows.ScreenData(key="is_date_required", example=True),
                 # default_date := flows.ScreenData(key="default_date", example="1704118927")
             ],
             layout=flows.Layout(
@@ -81,7 +80,7 @@ managing_dates_events_and_users = types.FlowJSON(
                                 label='תאריך',
                                 # init_value=default_date.data_key,
                                 # init_value=str(datetime.datetime.today().timestamp()),
-                                required=is_date_required.data_key,
+                                required=True,
                             ),
 
                             flows.Footer(
@@ -113,19 +112,25 @@ managing_dates_events_and_users = types.FlowJSON(
                     key="data_people_group_1",
                     example=[flows.DataSource(id="972", title="Yehuda", description="972")]
                 ),
+                data_is_group_1_visible := flows.ScreenData(key="data_is_group_1_visible", example=True),
+
                 data_people_group_2 := flows.ScreenData(
                     key="data_people_group_2",
                     example=[flows.DataSource(id="972", title="Yehuda", description="972")]
                 ),
+                data_is_group_2_visible := flows.ScreenData(key="data_is_group_2_visible", example=True),
+
                 data_people_group_3 := flows.ScreenData(
                     key="data_people_group_3",
                     example=[flows.DataSource(id="972", title="Yehuda", description="972")]
                 ),
+                data_is_group_3_visible := flows.ScreenData(key="data_is_group_3_visible", example=True),
+
                 data_people_group_4 := flows.ScreenData(
                     key="data_people_group_4",
                     example=[flows.DataSource(id="972", title="Yehuda", description="972")]
                 ),
-                data_is_group_4_enabled := flows.ScreenData(key="data_is_group_4_enabled", example=True)
+                data_is_group_4_visible := flows.ScreenData(key="data_is_group_4_visible", example=True),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
@@ -137,19 +142,22 @@ managing_dates_events_and_users = types.FlowJSON(
                             people_group_1 := flows.CheckboxGroup(
                                 name="people_group_1",
                                 data_source=data_people_group_1.data_key,
+                                visible=data_is_group_1_visible.data_key,
                             ),
                             people_group_2 := flows.CheckboxGroup(
                                 name="people_group_2",
                                 data_source=data_people_group_2.data_key,
+                                visible=data_is_group_2_visible.data_key,
                             ),
                             people_group_3 := flows.CheckboxGroup(
                                 name="people_group_3",
                                 data_source=data_people_group_3.data_key,
+                                visible=data_is_group_3_visible.data_key,
                             ),
                             people_group_4 := flows.CheckboxGroup(
                                 name="people_group_4",
                                 data_source=data_people_group_4.data_key,
-                                enabled=data_is_group_4_enabled.data_key,
+                                visible=data_is_group_4_visible.data_key,
                             ),
                             flows.Footer(
                                 label='סיום',

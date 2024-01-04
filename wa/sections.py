@@ -8,25 +8,27 @@ from data import modules
 from wa import listener
 
 
-def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
-    cbs.mark_as_read()
-    wa_id = cbs.from_user.wa_id
-
-    date = datetime.datetime.now()
-
-    # TODO not working
-
+def get_event_peer_day(wa_id: str, date: datetime.date.today) -> str:
     shahris = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SHACHRIS, date=date)
     seder_a = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_ALEF, date=date)
     seder_b = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_BET, date=date)
     seder_g = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_GIMEL, date=date)
 
+    return (f'למדת בתאריך {date}:\n'
+            f'שחרית: {"X" if shahris is None else "V"}\n'
+            f'סדר א: {"X" if seder_a is None else "V"}\n'
+            f'סדר ב: {"X" if seder_b is None else "V"}\n'
+            f'סדר ג: {"X" if seder_g is None else "V"}\n')
+
+
+def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
+    cbs.mark_as_read()
+    wa_id = cbs.from_user.wa_id
+
+    date = datetime.date.today()
+
     cbs.reply(
-        text=f'למדת:\n'
-             f'shachris: {"X" if shahris is None else "V"}\n'
-             f'seder a: {"X" if seder_a is None else "V"}\n'
-             f'seder b: {"X" if seder_b is None else "V"}\n'
-             f'seder g: {"X" if seder_g is None else "V"}\n'
+        text=get_event_peer_day(wa_id=wa_id, date=date)
     )
 
 
@@ -41,11 +43,11 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
 
     cbs.reply(
         text=f'למדת:\n'
-             f'shachris: {shahris}\n'
-             f'seder a: {seder_a}\n'
-             f'seder b: {seder_b}\n'
-             f'seder g: {seder_g}\n'
-             f'all: {shahris + seder_a + seder_b + seder_g}'
+             f'שחרית: {shahris}\n'
+             f'סדר א: {seder_a}\n'
+             f'סדר ב: {seder_b}\n'
+             f'סדר ג: {seder_g}\n'
+             f'הכל ביחד: {shahris + seder_a + seder_b + seder_g}'
     )
 
 
@@ -62,7 +64,6 @@ def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseO
             flow_action_payload={
                 "welcome_user": f"Hello {cbs.from_user.name}",
                 "is_event_type_required": False,
-                "is_date_required": True,
             }
         )
     )
@@ -87,7 +88,6 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
             flow_action_payload={
                 "welcome_user": f"ברוך הבא {cbs.from_user.name}",
                 "is_event_type_required": True,
-                "is_date_required": True,
                 # "default_date": str(int(datetime.datetime.today().timestamp())),
                 # "default_date": datetime.datetime.today().timestamp(),
             }
@@ -98,14 +98,13 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
 def add_and_remove_users(
         _: WhatsApp, cbs:
         types.CallbackSelection[modules.ChooseOptionAdmin] | types.CallbackButton[modules.ChooseOptionAdmin]):
-
     wa_id = cbs.from_user.wa_id
 
     callback_data = cbs.data.choose
 
     cbs.mark_as_read()
 
-    add_users = callback_data == modules.AdminOption.ADD_USERS or callback_data == modules.UserOption.ADD_ADMIN
+    add_users = callback_data == modules.AdminOption.ADD_USERS or callback_data == modules.AdminOption.ADD_ADMIN
 
     admin = None
     if callback_data == modules.AdminOption.ADD_ADMIN:
@@ -141,7 +140,7 @@ def add_and_remove_users(
             return
 
     buttons = [
-        types.Button(title="ביטול", callback_data=modules.ChooseOptionUser(choose=modules.UserOption.CANCEL))
+        types.Button(title="ביטול", callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.CANCEL))
     ]
     if admin is None:
         buttons.append(
