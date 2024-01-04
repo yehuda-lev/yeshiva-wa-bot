@@ -107,18 +107,18 @@ def add_and_remove_users(
 
     add_users = callback_data == modules.Option.ADD_USERS or callback_data == modules.Option.ADD_ADMIN
 
-    is_admin = None
+    admin = None
     if callback_data == modules.Option.ADD_ADMIN:
-        is_admin = True
+        admin = True
     elif callback_data == modules.Option.REMOVE_ADMIN:
-        is_admin = False
+        admin = False
 
     # add listener
     listener.add_listener(
         wa_id=wa_id,
         data={
             "add_users": True if add_users else False,
-            "admin": is_admin
+            "admin": admin
         }
     )
 
@@ -132,10 +132,10 @@ def add_and_remove_users(
             text = "אנא שלח לי את האנשי קשר שברצונך להסיר"
             text_admin = "להסרת מנהל"
 
-        case modules.Option.ADD_USERS:
+        case modules.Option.ADD_ADMIN:
             text = "אנא שלח לי את האנשי קשר שברצונך להוסיף לניהול"
 
-        case modules.Option.REMOVE_USERS:
+        case modules.Option.REMOVE_ADMIN:
             text = "אנא שלח לי את האנשי קשר שברצונך להסיר מהניהול"
         case _:
             return
@@ -143,10 +143,11 @@ def add_and_remove_users(
     buttons = [
         types.Button(title="ביטול", callback_data=modules.ChooseOption(choose=modules.Option.CANCEL))
     ]
-    if is_admin is not None:
+    if admin is None:
         buttons.append(
             types.Button(title=text_admin, callback_data=modules.ChooseOption(
-                choose=modules.Option.ADD_ADMIN if is_admin else modules.Option.REMOVE_ADMIN))
+                choose=modules.Option.ADD_ADMIN
+                if callback_data == modules.Option.ADD_USERS else modules.Option.REMOVE_ADMIN))
         )
 
     cbs.reply(

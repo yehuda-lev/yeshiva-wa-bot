@@ -42,6 +42,10 @@ def send_welcome(_: WhatsApp, msg: types.Message):
             description='added new users',
             callback_data=modules.ChooseOption(choose=modules.Option.ADD_USERS)
         ),
+        types.SectionRow(
+            title='remove users',
+            callback_data=modules.ChooseOption(choose=modules.Option.REMOVE_USERS)
+        ),
     ]
 
     sections = [
@@ -75,14 +79,28 @@ def handle_contact(_: WhatsApp, msg: types.Message):
     get_data = listener.user_id_to_state[wa_id]
 
     is_admin = get_data["admin"]
-    admin = True if is_admin else False
+    admin = True if is_admin is True else False
 
-    pprint(msg)
+    users = ""
     for contact in msg.contacts:
         for number in contact.phones:
             phone = number.wa_id if number.wa_id else number.phone
+            name = contact.name.formatted_name
             if not repository.is_wa_user_exists(wa_id=phone):
-                print(phone, contact.name.formatted_name, admin)
-                repository.create_user(wa_id=phone, name=contact.name.formatted_name, admin=admin)
+                repository.create_user(wa_id=phone, name=name, admin=admin)
+                users += f"{name}\n"
+
+            else:
+                if get_data["add_users"]:
+                    if is_admin is not None:
+                        repository.update_user_info(wa_id=phone, admin=admin)
+                        users += f"{name}\n"
+                else:
+                    repository.del_user(wa_id=phone)
 
     listener.remove_listener(wa_id=wa_id)
+
+    if len(users) != 0:
+        msg.reply(
+            text=users
+        )

@@ -78,7 +78,7 @@ HANDLERS = [
     handlers.CallbackButtonHandler(
         sections.add_and_remove_users,
         lambda _, cbd: (cbd.data.choose == modules.Option.ADD_ADMIN
-                        or cbd.data.choose == modules.Option.ADD_ADMIN),
+                        or cbd.data.choose == modules.Option.REMOVE_ADMIN),
         factory_before_filters=True,
         factory=modules.ChooseOption,
 
