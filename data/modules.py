@@ -12,14 +12,23 @@ class EventType(str, Enum):
     SEDER_GIMEL = auto()
 
 
-class Option(str, Enum):
+class UserOption(str, Enum):
 
     # USERS
     GET_EVENT_DAY = auto()
     GET_COUNT_EVENT = auto()
     GET_EVENT_SPECIFIC = auto()
 
+
+@dataclass(frozen=True, slots=True)
+class ChooseOptionUser(types.CallbackData):
+    choose: UserOption
+
+
+class AdminOption(str, Enum):
     # ADMIN
+
+    ADMIN = auto()
     CREATE_EVENTS = auto()
     REMOVE_EVENTS = auto()
     ADD_USERS = auto()
@@ -31,5 +40,5 @@ class Option(str, Enum):
 
 
 @dataclass(frozen=True, slots=True)
-class ChooseOption(types.CallbackData):
-    choose: Option
+class ChooseOptionAdmin(types.CallbackData):
+    choose: AdminOption

@@ -32,36 +32,43 @@ HANDLERS = [
     # callback selection
     handlers.CallbackSelectionHandler(
         sections.get_event_day,
-        lambda _, cbs: cbs.data.choose == modules.Option.GET_EVENT_DAY,
+        lambda _, cbs: cbs.data.choose == modules.UserOption.GET_EVENT_DAY,
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionUser,
     ),
     handlers.CallbackSelectionHandler(
         sections.get_count_event,
-        lambda _, cbs: cbs.data.choose == modules.Option.GET_COUNT_EVENT,
+        lambda _, cbs: cbs.data.choose == modules.UserOption.GET_COUNT_EVENT,
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionUser,
     ),
     handlers.CallbackSelectionHandler(
         sections.get_event_specific,
-        lambda _, cbs: cbs.data.choose == modules.Option.GET_EVENT_SPECIFIC,
+        lambda _, cbs: cbs.data.choose == modules.UserOption.GET_EVENT_SPECIFIC,
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionUser,
     ),
+
     # admin
     handlers.CallbackSelectionHandler(
-        sections.add_and_remove_events,
-        lambda _, cbs: (cbs.data.choose == modules.Option.CREATE_EVENTS
-                        or cbs.data.choose == modules.Option.REMOVE_EVENTS),
+        start.admin_selection,
+        lambda _, cbs: cbs.data.choose == modules.AdminOption.ADMIN,
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionAdmin,
+    ),
+    handlers.CallbackSelectionHandler(
+        sections.add_and_remove_events,
+        lambda _, cbs: (cbs.data.choose == modules.AdminOption.CREATE_EVENTS
+                        or cbs.data.choose == modules.AdminOption.REMOVE_EVENTS),
+        factory_before_filters=True,
+        factory=modules.ChooseOptionAdmin,
     ),
     handlers.CallbackSelectionHandler(
         sections.add_and_remove_users,
-        lambda _, cbs: (cbs.data.choose == modules.Option.ADD_USERS
-                        or cbs.data.choose == modules.Option.REMOVE_USERS),
+        lambda _, cbs: (cbs.data.choose == modules.AdminOption.ADD_USERS
+                        or cbs.data.choose == modules.AdminOption.REMOVE_USERS),
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionAdmin,
     ),
 
     # flows
@@ -77,16 +84,16 @@ HANDLERS = [
     # callback button
     handlers.CallbackButtonHandler(
         sections.add_and_remove_users,
-        lambda _, cbd: (cbd.data.choose == modules.Option.ADD_ADMIN
-                        or cbd.data.choose == modules.Option.REMOVE_ADMIN),
+        lambda _, cbd: (cbd.data.choose == modules.AdminOption.ADD_ADMIN
+                        or cbd.data.choose == modules.AdminOption.REMOVE_ADMIN),
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionAdmin,
     ),
 
     handlers.CallbackButtonHandler(
         start.cancel,
-        lambda _, cbd: cbd.data.choose == modules.Option.CANCEL,
+        lambda _, cbd: cbd.data.choose == modules.AdminOption.CANCEL,
         factory_before_filters=True,
-        factory=modules.ChooseOption,
+        factory=modules.ChooseOptionUser,
     ),
 ]

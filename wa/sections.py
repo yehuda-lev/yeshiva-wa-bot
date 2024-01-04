@@ -8,7 +8,7 @@ from data import modules
 from wa import listener
 
 
-def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
+def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
@@ -30,7 +30,7 @@ def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption
     )
 
 
-def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
+def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
@@ -49,7 +49,7 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
     )
 
 
-def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
+def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
     cbs.reply(
         text='this is a test with Flow',
         buttons=types.FlowButton(
@@ -70,10 +70,10 @@ def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseO
 
 # admin
 
-def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption]):
+def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
     cbs.mark_as_read()
 
-    is_create = cbs.data.choose == modules.Option.CREATE_EVENTS
+    is_create = cbs.data.choose == modules.AdminOption.CREATE_EVENTS
 
     cbs.reply(
         text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
@@ -97,7 +97,7 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
 
 def add_and_remove_users(
         _: WhatsApp, cbs:
-        types.CallbackSelection[modules.ChooseOption] | types.CallbackButton[modules.ChooseOption]):
+        types.CallbackSelection[modules.ChooseOptionAdmin] | types.CallbackButton[modules.ChooseOptionAdmin]):
 
     wa_id = cbs.from_user.wa_id
 
@@ -105,12 +105,12 @@ def add_and_remove_users(
 
     cbs.mark_as_read()
 
-    add_users = callback_data == modules.Option.ADD_USERS or callback_data == modules.Option.ADD_ADMIN
+    add_users = callback_data == modules.AdminOption.ADD_USERS or callback_data == modules.UserOption.ADD_ADMIN
 
     admin = None
-    if callback_data == modules.Option.ADD_ADMIN:
+    if callback_data == modules.AdminOption.ADD_ADMIN:
         admin = True
-    elif callback_data == modules.Option.REMOVE_ADMIN:
+    elif callback_data == modules.AdminOption.REMOVE_ADMIN:
         admin = False
 
     # add listener
@@ -124,30 +124,30 @@ def add_and_remove_users(
 
     text_admin = None
     match callback_data:
-        case modules.Option.ADD_USERS:
+        case modules.AdminOption.ADD_USERS:
             text = "אנא שלח לי את האנשי קשר שברצונך להוסיף"
             text_admin = "להוספת מנהל"
 
-        case modules.Option.REMOVE_USERS:
+        case modules.AdminOption.REMOVE_USERS:
             text = "אנא שלח לי את האנשי קשר שברצונך להסיר"
             text_admin = "להסרת מנהל"
 
-        case modules.Option.ADD_ADMIN:
+        case modules.AdminOption.ADD_ADMIN:
             text = "אנא שלח לי את האנשי קשר שברצונך להוסיף לניהול"
 
-        case modules.Option.REMOVE_ADMIN:
+        case modules.AdminOption.REMOVE_ADMIN:
             text = "אנא שלח לי את האנשי קשר שברצונך להסיר מהניהול"
         case _:
             return
 
     buttons = [
-        types.Button(title="ביטול", callback_data=modules.ChooseOption(choose=modules.Option.CANCEL))
+        types.Button(title="ביטול", callback_data=modules.ChooseOptionUser(choose=modules.UserOption.CANCEL))
     ]
     if admin is None:
         buttons.append(
-            types.Button(title=text_admin, callback_data=modules.ChooseOption(
-                choose=modules.Option.ADD_ADMIN
-                if callback_data == modules.Option.ADD_USERS else modules.Option.REMOVE_ADMIN))
+            types.Button(title=text_admin, callback_data=modules.ChooseOptionAdmin(
+                choose=modules.AdminOption.ADD_ADMIN
+                if callback_data == modules.AdminOption.ADD_USERS else modules.AdminOption.REMOVE_ADMIN))
         )
 
     cbs.reply(
