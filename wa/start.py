@@ -104,3 +104,9 @@ def handle_contact(_: WhatsApp, msg: types.Message):
         msg.reply(
             text=users
         )
+
+
+def cancel(_: WhatsApp, cbd: types.CallbackButton[modules.ChooseOption]):
+    wa_id = cbd.from_user.wa_id
+    listener.remove_listener(wa_id=wa_id)
+    cbd.reply(text="בוצע")

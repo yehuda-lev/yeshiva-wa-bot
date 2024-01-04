@@ -81,6 +81,12 @@ HANDLERS = [
                         or cbd.data.choose == modules.Option.REMOVE_ADMIN),
         factory_before_filters=True,
         factory=modules.ChooseOption,
+    ),
 
-    )
+    handlers.CallbackButtonHandler(
+        start.cancel,
+        lambda _, cbd: cbd.data.choose == modules.Option.CANCEL,
+        factory_before_filters=True,
+        factory=modules.ChooseOption,
+    ),
 ]
