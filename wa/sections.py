@@ -153,3 +153,40 @@ def add_and_remove_users(
         text=text,
         buttons=buttons
     )
+
+
+def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
+    cbs.mark_as_read()
+    wa_id = cbs.from_user.wa_id
+
+    cbs.reply(
+        text='אנא לחץ על הכפתור למטה בכדי לקבל או לערוך את פרטי המשתמשים',
+        buttons=types.FlowButton(
+            title='ניהול משתמשים',
+            flow_id=774420634511632,
+            flow_action_type=flows.FlowActionType.NAVIGATE,
+            flow_token=f"get_user_details_{wa_id}",
+            mode=flows.FlowStatus.DRAFT,
+            flow_action_screen='user_details',
+            flow_action_payload={
+                "data_ask_user_details": [
+                    {
+                        "id": modules.AdminOption.USER_IN_PROGRAM,
+                        "title": "משתמשים שבמבצע",
+                    },
+                    {
+                        "id": modules.AdminOption.USER_NOT_IN_PROGRAM,
+                        "title": "משתמשים שלא במבצע",
+                    },
+                    {
+                        "id": modules.AdminOption.USER_PAY,
+                        "title": "משתמשים ששילמו",
+                    },
+                    {
+                        "id": modules.AdminOption.USER_NOT_PAY,
+                        "title": "משתמשים שלא שילמו",
+                    },
+                ]
+            }
+        )
+    )

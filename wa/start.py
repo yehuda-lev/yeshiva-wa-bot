@@ -68,6 +68,10 @@ def admin_selection(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
             title='מחיקת משתמשים',
             callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.REMOVE_USERS)
         ),
+        types.SectionRow(
+            title='עריכת/קבלת פרטי משתמשים',
+            callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.EDIT_AND_GET_DETAILS)
+        ),
     ]
 
     cbs.reply(

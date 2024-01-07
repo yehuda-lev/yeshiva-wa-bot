@@ -36,6 +36,13 @@ class AdminOption(str, Enum):
     ADD_ADMIN = auto()
     REMOVE_ADMIN = auto()
 
+    EDIT_AND_GET_DETAILS = auto()
+
+    USER_PAY = auto()
+    USER_NOT_PAY = auto()
+    USER_IN_PROGRAM = auto()
+    USER_NOT_IN_PROGRAM = auto()
+
     CANCEL = auto()
 
 

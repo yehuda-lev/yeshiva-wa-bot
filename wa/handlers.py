@@ -1,7 +1,7 @@
 from pywa import handlers, filters, WhatsApp, types
 
 from db import repository
-from wa import start, sections, handale_flows, listener
+from wa import start, sections, handle_flows, listener
 from data import modules
 
 
@@ -70,15 +70,21 @@ HANDLERS = [
         factory_before_filters=True,
         factory=modules.ChooseOptionAdmin,
     ),
+    handlers.CallbackSelectionHandler(
+        sections.handle_user_details,
+        lambda _, cbs: cbs.data.choose == modules.AdminOption.EDIT_AND_GET_DETAILS,
+        factory_before_filters=True,
+        factory=modules.ChooseOptionAdmin,
+    ),
 
     # flows
     handlers.FlowRequestHandler(
-        handale_flows.get_request_flow,
+        handle_flows.get_request_flow,
         endpoint='/support_request_flow',
     ),
 
     handlers.FlowCompletionHandler(
-        handale_flows.get_completion_flow,
+        handle_flows.get_completion_flow,
     ),
 
     # callback button
@@ -94,6 +100,6 @@ HANDLERS = [
         start.cancel,
         lambda _, cbd: cbd.data.choose == modules.AdminOption.CANCEL,
         factory_before_filters=True,
-        factory=modules.ChooseOptionUser,
+        factory=modules.ChooseOptionAdmin,
     ),
 ]

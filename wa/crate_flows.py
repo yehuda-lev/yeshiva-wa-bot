@@ -29,7 +29,8 @@ managing_dates_events_and_users = types.FlowJSON(
     version=utils.Version.FLOW_JSON,
     data_api_version=utils.Version.FLOW_DATA_API,
     routing_model={
-        "choose_date_and_type": ["choose_people"]
+        "choose_date_and_type": ["choose_people"],
+        "user_details": ["choose_people"],
     },
     screens=[
         flows.Screen(
@@ -105,6 +106,8 @@ managing_dates_events_and_users = types.FlowJSON(
             title='בחירת בחורים',
             terminal=True,
             data=[
+                data_type_get_user := flows.ScreenData(key="type_get_user", example=["get_info"]),
+                data_get_user := flows.ScreenData(key="get_user", example="12"),
                 event_type := flows.ScreenData(key="event_type", example="shachris"),
                 date := flows.ScreenData(key="date", example="30/12/32023"),
 
@@ -170,6 +173,68 @@ managing_dates_events_and_users = types.FlowJSON(
                                         "people_group_2": people_group_2.form_ref,
                                         "people_group_3": people_group_3.form_ref,
                                         "people_group_4": people_group_4.form_ref,
+
+                                        "data_type_get_user": data_type_get_user.data_key,
+                                        "data_get_user": data_get_user.data_key,
+                                    }
+                                ),
+                            )
+                        ],
+                    )
+                ]
+            ),
+        ),
+
+        flows.Screen(
+            id='user_details',
+            title='עריכת פרטי המשתמש',
+            terminal=True,
+            data=[
+                data_ask_user_details := flows.ScreenData(
+                    key="data_ask_user_details",
+                    example=[flows.DataSource(id="972", title="Yehuda")]
+                ),
+            ],
+            layout=flows.Layout(
+                type=flows.LayoutType.SINGLE_COLUMN,
+                children=[
+                    flows.Form(
+                        name='form',
+                        children=[
+                            get_user := flows.Dropdown(
+                                name="ניהול משתמשים",
+                                label="בחר את סוג המידע",
+                                required=True,
+                                data_source=data_ask_user_details.data_key,
+                            ),
+
+                            type_get_user := flows.CheckboxGroup(
+                                name='מה ברצונך לעשות',
+                                max_selected_items=1,
+                                required=True,
+                                data_source=[
+                                    flows.DataSource(
+                                        id="get_info",
+                                        title="קבלת פרטים",
+                                        description="קבלת פרטים על משתמשים.\n"
+                                                    "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע"
+                                    ),
+                                    flows.DataSource(
+                                        id="edit_info",
+                                        title="שינוי פרטים",
+                                        description="עריכת פרטים של משתמשים.\n"
+                                                    "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע"
+                                    ),
+                                ]
+                            ),
+
+                            flows.Footer(
+                                label='המשך',
+                                on_click_action=flows.Action(
+                                    name=flows.FlowActionType.DATA_EXCHANGE,
+                                    payload={
+                                        "get_user": get_user.form_ref,
+                                        "type_get_user": type_get_user.form_ref,
                                     }
                                 ),
                             )
@@ -182,7 +247,7 @@ managing_dates_events_and_users = types.FlowJSON(
 )
 
 # print(json.dumps(customer_satisfaction_survey.to_dict()))
-pprint(managing_dates_events_and_users)
+# pprint(managing_dates_events_and_users)
 
 # try:
 #     edit_flow = wa.update_flow_json(flow_id=flow_id, flow_json=managing_dates_events_and_users)
@@ -191,10 +256,10 @@ pprint(managing_dates_events_and_users)
 #     print("Error updating flow")
 #     pprint(wa.get_flow(flow_id=flow_id).validation_errors)
 
-update_flow_metadate = wa.update_flow_metadata(
-    flow_id=flow_id,
-    endpoint_uri=f'{settings.CALLBACK_URL}/support_request_flow')
-print(update_flow_metadate)
+# update_flow_metadate = wa.update_flow_metadata(
+#     flow_id=flow_id,
+#     endpoint_uri=f'{settings.CALLBACK_URL}/support_request_flow')
+# print(update_flow_metadate)
 
 pprint(wa.get_flow(flow_id=flow_id))
 pprint(wa.get_flow_assets(flow_id))

@@ -65,7 +65,10 @@ def create_user(*, wa_id: str, name: str, admin: bool = False) -> int:
     """
 
     with get_session() as session:
-        wa_user = WaUser(wa_id=wa_id, name=name, admin=admin, created_at=datetime.datetime.now())
+        wa_user = WaUser(
+            wa_id=wa_id, name=name, admin=admin, created_at=datetime.datetime.now(),
+            is_pay=False, in_program=False,
+        )
         session.add(wa_user)
         session.commit()
         return wa_user.id
@@ -158,15 +161,28 @@ def del_event(*, wa_id: str, type_event: modules.EventType, date: datetime.date)
 # admin
 
 
-def get_all_users() -> dict[str, tuple[str, int]]:
+def get_all_users(pay: bool = None, in_program: bool = None) -> dict[str, tuple[str, int]]:
     """
     Get all users
+    Args:
+        pay: if user pay or not (default None)
+        in_program: if user in the program or not (default None)
     Returns:
          dict[wa_id: tuple[name, id]]
     """
 
     with get_session() as session:
-        users = session.query(WaUser)
+        users = session.query(
+            WaUser
+        ).filter(  # filter is_pay
+            WaUser.is_pay == pay
+            if pay is not None
+            else True,
+        ).filter(  # filter in_program
+            WaUser.in_program == in_program
+            if in_program is not None
+            else True,
+        )
         dict_users = {}
         for user in users:
             dict_users.update({user.wa_id: (user.name, user.id)})

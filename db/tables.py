@@ -42,6 +42,8 @@ class WaUser(BaseTable):
     wa_id: Mapped[str] = mapped_column(String(15), unique=True)
     admin: Mapped[bool] = mapped_column(default=False)
     name: Mapped[str] = mapped_column(String(20))
+    is_pay: Mapped[bool]
+    in_program: Mapped[bool]
     created_at: Mapped[datetime.datetime]
     events: Mapped[list[Event]] = relationship(
         back_populates="by_wa_user"
