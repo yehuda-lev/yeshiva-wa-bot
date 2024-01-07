@@ -18,6 +18,7 @@ class UserOption(str, Enum):
     GET_EVENT_DAY = auto()
     GET_COUNT_EVENT = auto()
     GET_EVENT_SPECIFIC = auto()
+    HELP = auto()
 
 
 @dataclass(frozen=True, slots=True)

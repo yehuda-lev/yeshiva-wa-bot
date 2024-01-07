@@ -4,8 +4,10 @@ import datetime
 from pywa.types import flows
 
 from db import repository
-from data import modules
+from data import modules, utils
 from wa import listener
+
+settings = utils.get_settings()
 
 
 def get_event_peer_day(wa_id: str, date: datetime.date.today) -> str:
@@ -15,10 +17,10 @@ def get_event_peer_day(wa_id: str, date: datetime.date.today) -> str:
     seder_g = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_GIMEL, date=date)
 
     return (f'למדת בתאריך {date}:\n'
-            f'שחרית: {"X" if shahris is None else "V"}\n'
-            f'סדר א: {"X" if seder_a is None else "V"}\n'
-            f'סדר ב: {"X" if seder_b is None else "V"}\n'
-            f'סדר ג: {"X" if seder_g is None else "V"}\n')
+            f'שחרית: {"❌" if shahris is None else "✅"}\n'
+            f'סדר א: {"❌" if seder_a is None else "✅"}\n'
+            f'סדר ב: {"❌" if seder_b is None else "✅"}\n'
+            f'סדר ג: {"❌" if seder_g is None else "✅"}\n')
 
 
 def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
@@ -53,10 +55,10 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
 
 def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
     cbs.reply(
-        text='this is a test with Flow',
+        text='יצירת אירוע',
         buttons=types.FlowButton(
-            title='test flow',
-            flow_id=774420634511632,
+            title='יצירת אירוע',
+            flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f'get_event_specific_{cbs.from_user.wa_id}',
             mode=flows.FlowStatus.DRAFT,
@@ -80,7 +82,7 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
         text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
         buttons=types.FlowButton(
             title='open',
-            flow_id=774420634511632,
+            flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}',
             mode=flows.FlowStatus.DRAFT,
@@ -163,7 +165,7 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
         text='אנא לחץ על הכפתור למטה בכדי לקבל או לערוך את פרטי המשתמשים',
         buttons=types.FlowButton(
             title='ניהול משתמשים',
-            flow_id=774420634511632,
+            flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f"get_user_details_{wa_id}",
             mode=flows.FlowStatus.DRAFT,
@@ -190,3 +192,21 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
             }
         )
     )
+
+
+def send_help(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
+    cbs.mark_as_read()
+    text = """*עזרה*\n
+    עד יום חמישי הסמוך לטיסה יש 10 שבועות שהם:
+50 תפילות שחרית
+50 סדרי א’
+40 סדרי ב’ 
+40סדרי ג’
+סך הכל 180 זכויות.
+בהשתתפות ב 140 זכויות (מה שתבחרו)  הנכם זכאים להשתתף בטיול בעלות של 1300 ש’’ח בלבד.
+בהשתתפות של בין 100 ל140 זכויות הנכם זכאים להשתתף בטיול בעלות של 2000 שקלים בלבד. 
+בהשתתפות של בין 70 ל100 זכויות הנכם זכאים להשתתף בטיול בעלות של 2550 שקלים.
+9.בהשתתפות של פחות מ70 זכויות הנכם נדרשים לשלם מחיר מלא בסך 3800 שקלים 
+מחיר זה תקף לבני הישיבה בלבד, אורחים מחוץ לישיבה יצטרכו לשלם יותר עקב עלייה חדה במחירי הטיסות והאטרקציות.
+"""
+    cbs.reply(text)
