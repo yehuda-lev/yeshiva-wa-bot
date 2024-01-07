@@ -76,6 +76,12 @@ HANDLERS = [
         factory_before_filters=True,
         factory=modules.ChooseOptionAdmin,
     ),
+    handlers.CallbackSelectionHandler(
+        sections.send_help,
+        lambda _, cbs: cbs.data.choose == modules.UserOption.HELP,
+        factory_before_filters=True,
+        factory=modules.ChooseOptionUser,
+    ),
 
     # flows
     handlers.FlowRequestHandler(

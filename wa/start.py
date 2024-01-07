@@ -23,6 +23,10 @@ def send_welcome(_: WhatsApp, msg: types.Message):
             title='חיפוש לפי יום',
             callback_data=modules.ChooseOptionUser(choose=modules.UserOption.GET_EVENT_SPECIFIC)
         ),
+        types.SectionRow(
+            title='עזרה',
+            callback_data=modules.ChooseOptionUser(choose=modules.UserOption.HELP)
+        ),
     ]
 
     if repository.is_wa_user_admin(wa_id=wa_id):

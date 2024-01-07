@@ -25,6 +25,7 @@ class Settings:
     UNDER_MAINTENANCE = os.environ["UNDER_MAINTENANCE"]
     ADMINS = os.environ["WA_ADMINS"]
 
+    FLOW_ID = os.environ["FLOW_ID"]
     PRIVATE_KEY = os.environ["PRIVATE_KEY"]
     PASSWORD_PRIVATE_KEY = os.environ["PASSWORD_PRIVATE_KEY"]
 
