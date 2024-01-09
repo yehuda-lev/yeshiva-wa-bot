@@ -40,4 +40,4 @@ for admin in settings.ADMINS.split(","):
             repository.update_user_info(wa_id=admin, admin=True)
 
 
-uvicorn.run(app, port=8080, access_log=False)
+uvicorn.run(app, port=8080, access_log=True)
