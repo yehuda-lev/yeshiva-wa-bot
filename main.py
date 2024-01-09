@@ -18,6 +18,7 @@ wa = WhatsApp(
     server=app,
     verify_token=settings.WA_VERIFY_TOKEN,
     callback_url=settings.CALLBACK_URL,
+    webhook_endpoint=settings.WEBHOOK_ENDPOINT,
     app_id=int(settings.APP_ID),
     app_secret=settings.APP_SECRET,
     business_private_key=settings.PRIVATE_KEY,
