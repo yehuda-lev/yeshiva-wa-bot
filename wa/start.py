@@ -38,7 +38,9 @@ def send_welcome(_: WhatsApp, msg: types.Message):
         )
 
     msg.reply(
-        text=f'ברוך הבא {msg.from_user.name} לבוט',
+        text=f'ברוך הבא {msg.from_user.name} '
+             f'לבוט *השטייגעניסט המעופף ✈️*'
+             f'\n\n*איזה פעולה ברצונך לבצע?*',
         footer="יהודה לב - צ'אטבוטים ואוטומציה",
         buttons=types.SectionList(
             button_title='בחר',

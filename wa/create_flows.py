@@ -18,9 +18,10 @@ wa = WhatsApp(
 # create_flow = wa.create_flow(
 #     name='managing_dates_events_and_users',
 #     categories=[types.FlowCategory.CUSTOMER_SUPPORT],
-# )  # -> 774420634511632
+# )  # -> settings.FLOW_ID
+# print(create_flow)
 
-flow_id = 774420634511632
+flow_id = settings.FLOW_ID
 print(flow_id)
 # pprint(wa.get_flow(flow_id=flow_id))
 
@@ -258,8 +259,18 @@ managing_dates_events_and_users = types.FlowJSON(
 
 # update_flow_metadate = wa.update_flow_metadata(
 #     flow_id=flow_id,
+#     # endpoint_uri=f'{settings.CALLBACK_URL}{settings.WEBHOOK_ENDPOINT}/support_request_flow')
 #     endpoint_uri=f'{settings.CALLBACK_URL}/support_request_flow')
 # print(update_flow_metadate)
 
-pprint(wa.get_flow(flow_id=flow_id))
-pprint(wa.get_flow_assets(flow_id))
+# set_business_public_key = wa.set_business_public_key(
+#     public_key="""-----BEGIN PUBLIC KEY-----
+# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
+# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
+# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
+# -----END PUBLIC KEY-----"""
+# )
+# print(set_business_public_key)
+
+# pprint(wa.get_flow(flow_id=flow_id))
+# pprint(wa.get_flow_assets(flow_id))
