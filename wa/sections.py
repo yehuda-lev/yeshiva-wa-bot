@@ -10,7 +10,7 @@ from wa import listener
 settings = utils.get_settings()
 
 
-def get_event_peer_day(wa_id: str, date: datetime.date.today) -> str:
+def get_event_per_day(wa_id: str, date: datetime.date.today) -> str:
     shahris = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SHACHRIS, date=date)
     seder_a = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_ALEF, date=date)
     seder_b = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_BET, date=date)
@@ -30,7 +30,7 @@ def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption
     date = datetime.date.today()
 
     cbs.reply(
-        text=get_event_peer_day(wa_id=wa_id, date=date)
+        text=get_event_per_day(wa_id=wa_id, date=date)
     )
 
 
@@ -61,10 +61,10 @@ def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseO
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f'get_event_specific_{cbs.from_user.wa_id}',
-            mode=flows.FlowStatus.DRAFT,
+            mode=settings.FLOW_STATUS,
             flow_action_screen='choose_date_and_type',
             flow_action_payload={
-                "welcome_user": f"Hello {cbs.from_user.name}",
+                "welcome_user": f"שלום {cbs.from_user.name}",
                 "is_event_type_required": False,
             }
         )
@@ -85,7 +85,7 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}',
-            mode=flows.FlowStatus.DRAFT,
+            mode=settings.FLOW_STATUS,
             flow_action_screen='choose_date_and_type',
             flow_action_payload={
                 "welcome_user": f"ברוך הבא {cbs.from_user.name}",
@@ -168,7 +168,7 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=f"get_user_details_{wa_id}",
-            mode=flows.FlowStatus.DRAFT,
+            mode=settings.FLOW_STATUS,
             flow_action_screen='user_details',
             flow_action_payload={
                 "data_ask_user_details": [

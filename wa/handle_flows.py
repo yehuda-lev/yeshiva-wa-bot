@@ -11,7 +11,6 @@ from wa import sections, helpers
 
 
 def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse | None:
-
     if req.has_error:
         logging.error(f"Request has err: {req.data}")
         return
@@ -31,9 +30,7 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
     elif flow_token.startswith("get_user_details"):
         res = req.data
 
-        # get_user = modules.AdminOption[res["get_user"]]
         get_user = list(modules.AdminOption)[int(res["get_user"]) - 1]
-        print(get_user)
 
         filter_pay, filter_program = None, None
 
@@ -90,30 +87,30 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
 
         list_users = ""
 
-        for users in res["people_group_1"], res["people_group_2"], res["people_group_3"], res["people_group_4"]:
-            for user in users:
-                if repository.is_wa_user_exists(wa_id=user):
-                    exists = repository.get_event(
-                        wa_id=user,
-                        type_event=event_type,
-                        date=date
-                    )
+        for user in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
+                     *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
+            if repository.is_wa_user_exists(wa_id=user):
+                exists = repository.get_event(
+                    wa_id=user,
+                    type_event=event_type,
+                    date=date
+                )
 
-                    if exists is None:
-                        # add events
-                        if flow.token.startswith('add_events'):
-                            repository.create_event(
-                                type_event=event_type,
-                                date=date,
-                                wa_id=user,
-                                added_by=flow.from_user.name
-                            )
-                            list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
+                if exists is None:
+                    # add events
+                    if flow.token.startswith('add_events'):
+                        repository.create_event(
+                            type_event=event_type,
+                            date=date,
+                            wa_id=user,
+                            added_by=flow.from_user.name
+                        )
+                        list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
 
-                    else:
-                        if flow.token.startswith('remove_events'):
-                            repository.del_event(type_event=event_type, date=date, wa_id=user)
-                            list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
+                else:
+                    if flow.token.startswith('remove_events'):
+                        repository.del_event(type_event=event_type, date=date, wa_id=user)
+                        list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
 
         event_type_he = ""
         match event_type:
@@ -143,7 +140,7 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
         date = datetime.date.fromtimestamp(int(res["date"]) / 1000)
 
         flow.reply(
-            text=sections.get_event_peer_day(wa_id=wa_id, date=date)
+            text=sections.get_event_per_day(wa_id=wa_id, date=date)
         )
 
     elif flow.token.startswith("get_user_details"):
@@ -154,18 +151,20 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
         if type_get_user == "get_info":
             info_users = ""
 
-            for users in res["people_group_1"], res["people_group_2"], res["people_group_3"], res["people_group_4"]:
-                for user in users:
-                    if repository.is_wa_user_exists(wa_id=user):
-                        wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
-                        info_users += wa_user.name
+            for user in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
+                         *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
+                if repository.is_wa_user_exists(wa_id=user):
+                    wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
+                    info_users += wa_user.name
             if len(info_users) != 0:
                 flow.reply(info_users)
 
         else:
             info_users = ""
 
-            for users in res["people_group_1"], res["people_group_2"], res["people_group_3"], res["people_group_4"]:
+            for users in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
+                          *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
+                print(users)
                 for user in users:
                     if repository.is_wa_user_exists(wa_id=user):
                         match get_user:

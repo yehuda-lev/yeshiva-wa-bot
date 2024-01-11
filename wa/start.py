@@ -104,20 +104,20 @@ def handle_contact(_: WhatsApp, msg: types.Message):
 
     users = ""
     for contact in msg.contacts:
-        for number in contact.phones:
-            phone = number.wa_id if number.wa_id else number.phone
-            name = contact.name.formatted_name
-            if not repository.is_wa_user_exists(wa_id=phone):
-                repository.create_user(wa_id=phone, name=name, admin=admin)
-                users += f"{name}\n"
+        number = contact.phones[0]
+        phone = number.wa_id or number.phone
+        name = contact.name.formatted_name
+        if not repository.is_wa_user_exists(wa_id=phone):
+            repository.create_user(wa_id=phone, name=name, admin=admin)
+            users += f"{name}\n"
 
+        else:
+            if get_data["add_users"]:
+                if is_admin is not None:
+                    repository.update_user_info(wa_id=phone, admin=admin)
+                    users += f"{name}\n"
             else:
-                if get_data["add_users"]:
-                    if is_admin is not None:
-                        repository.update_user_info(wa_id=phone, admin=admin)
-                        users += f"{name}\n"
-                else:
-                    repository.del_user(wa_id=phone)
+                repository.del_user(wa_id=phone)
 
     listener.remove_listener(wa_id=wa_id)
 

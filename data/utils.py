@@ -9,9 +9,6 @@ dotenv.load_dotenv()
 class Settings:
     """read the settings from .env file"""
 
-    def __int__(self):
-        pass
-
     WA_PHONE_ID = os.environ["WA_PHONE_ID"]
     WA_BUSINESS_ID = os.environ["WA_BUSINESS_ID"]
     WA_TOKEN = os.environ["WA_TOKEN"]
@@ -27,6 +24,7 @@ class Settings:
     ADMINS = os.environ["WA_ADMINS"]
 
     FLOW_ID = os.environ["FLOW_ID"]
+    FLOW_STATUS = os.environ["FLOW_STATUS"]
     PRIVATE_KEY = os.environ["PRIVATE_KEY"]
     PASSWORD_PRIVATE_KEY = os.environ["PASSWORD_PRIVATE_KEY"]
 

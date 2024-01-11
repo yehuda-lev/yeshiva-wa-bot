@@ -259,7 +259,6 @@ managing_dates_events_and_users = types.FlowJSON(
 
 # update_flow_metadate = wa.update_flow_metadata(
 #     flow_id=flow_id,
-#     # endpoint_uri=f'{settings.CALLBACK_URL}{settings.WEBHOOK_ENDPOINT}/support_request_flow')
 #     endpoint_uri=f'{settings.CALLBACK_URL}/support_request_flow')
 # print(update_flow_metadate)
 
