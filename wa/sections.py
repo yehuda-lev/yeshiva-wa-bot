@@ -5,7 +5,7 @@ from pywa.types import flows
 
 from db import repository
 from data import modules, utils
-from wa import listener
+from wa import listener, helpers
 
 settings = utils.get_settings()
 
@@ -38,19 +38,8 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
-    shahris = repository.get_events_count_by_wa_id(wa_id=wa_id, type_event=modules.EventType.SHACHRIS)
-    seder_a = repository.get_events_count_by_wa_id(wa_id=wa_id, type_event=modules.EventType.SEDER_ALEF)
-    seder_b = repository.get_events_count_by_wa_id(wa_id=wa_id, type_event=modules.EventType.SEDER_BET)
-    seder_g = repository.get_events_count_by_wa_id(wa_id=wa_id, type_event=modules.EventType.SEDER_GIMEL)
-
-    cbs.reply(
-        text=f'למדת:\n'
-             f'שחרית: {shahris}\n'
-             f'סדר א: {seder_a}\n'
-             f'סדר ב: {seder_b}\n'
-             f'סדר ג: {seder_g}\n'
-             f'הכל ביחד: {shahris + seder_a + seder_b + seder_g}'
-    )
+    text_data = helpers.get_data_by_user(wa_id=wa_id)
+    cbs.reply(text=f"למדת \n{text_data}")
 
 
 def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
@@ -97,63 +86,21 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
     )
 
 
-def add_and_remove_users(
-        _: WhatsApp, cbs:
-        types.CallbackSelection[modules.ChooseOptionAdmin] | types.CallbackButton[modules.ChooseOptionAdmin]):
-    wa_id = cbs.from_user.wa_id
-
-    callback_data = cbs.data.choose
-
+def add_users(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
     cbs.mark_as_read()
-
-    add_users = callback_data == modules.AdminOption.ADD_USERS or callback_data == modules.AdminOption.ADD_ADMIN
-
-    admin = None
-    if callback_data == modules.AdminOption.ADD_ADMIN:
-        admin = True
-    elif callback_data == modules.AdminOption.REMOVE_ADMIN:
-        admin = False
+    wa_id = cbs.from_user.wa_id
 
     # add listener
     listener.add_listener(
         wa_id=wa_id,
-        data={
-            "add_users": True if add_users else False,
-            "admin": admin
-        }
+        data={"add_users": True}
     )
 
-    text_admin = None
-    match callback_data:
-        case modules.AdminOption.ADD_USERS:
-            text = "אנא שלח לי את האנשי קשר שברצונך להוסיף"
-            text_admin = "להוספת מנהל"
-
-        case modules.AdminOption.REMOVE_USERS:
-            text = "אנא שלח לי את האנשי קשר שברצונך להסיר"
-            text_admin = "להסרת מנהל"
-
-        case modules.AdminOption.ADD_ADMIN:
-            text = "אנא שלח לי את האנשי קשר שברצונך להוסיף לניהול"
-
-        case modules.AdminOption.REMOVE_ADMIN:
-            text = "אנא שלח לי את האנשי קשר שברצונך להסיר מהניהול"
-        case _:
-            return
-
-    buttons = [
-        types.Button(title="ביטול", callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.CANCEL))
-    ]
-    if admin is None:
-        buttons.append(
-            types.Button(title=text_admin, callback_data=modules.ChooseOptionAdmin(
-                choose=modules.AdminOption.ADD_ADMIN
-                if callback_data == modules.AdminOption.ADD_USERS else modules.AdminOption.REMOVE_ADMIN))
-        )
-
     cbs.reply(
-        text=text,
-        buttons=buttons
+        text="אנא שלח לי את האנשי קשר שברצונך להוסיף",
+        buttons=[
+            types.Button(title="ביטול", callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.CANCEL))
+        ]
     )
 
 
@@ -187,6 +134,20 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
                     {
                         "id": modules.AdminOption.USER_NOT_PAY,
                         "title": "משתמשים שלא שילמו",
+                    }, {
+                        "id": modules.AdminOption.GET_ALL_USERS,
+                        "title": "כל המשתמשים",
+                    },
+                    {
+                        "id": modules.AdminOption.REMOVE_USERS,
+                        "title": "מחיקת משתמשים מהבוט",
+                    },
+                    {
+                        "id": modules.AdminOption.ADD_ADMIN,
+                        "title": "משתמשים שלא מנהלים",
+                    }, {
+                        "id": modules.AdminOption.REMOVE_ADMIN,
+                        "title": "משתמשים שמנהלים",
                     },
                 ]
             }

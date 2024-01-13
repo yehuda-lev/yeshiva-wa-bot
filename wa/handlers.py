@@ -64,9 +64,8 @@ HANDLERS = [
         factory=modules.ChooseOptionAdmin,
     ),
     handlers.CallbackSelectionHandler(
-        sections.add_and_remove_users,
-        lambda _, cbs: (cbs.data.choose == modules.AdminOption.ADD_USERS
-                        or cbs.data.choose == modules.AdminOption.REMOVE_USERS),
+        sections.add_users,
+        lambda _, cbs: cbs.data.choose == modules.AdminOption.ADD_USERS,
         factory_before_filters=True,
         factory=modules.ChooseOptionAdmin,
     ),
@@ -94,14 +93,6 @@ HANDLERS = [
     ),
 
     # callback button
-    handlers.CallbackButtonHandler(
-        sections.add_and_remove_users,
-        lambda _, cbd: (cbd.data.choose == modules.AdminOption.ADD_ADMIN
-                        or cbd.data.choose == modules.AdminOption.REMOVE_ADMIN),
-        factory_before_filters=True,
-        factory=modules.ChooseOptionAdmin,
-    ),
-
     handlers.CallbackButtonHandler(
         start.cancel,
         lambda _, cbd: cbd.data.choose == modules.AdminOption.CANCEL,

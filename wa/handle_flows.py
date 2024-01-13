@@ -3,7 +3,6 @@ import logging
 
 from pywa import WhatsApp, types
 from pywa.types import flows
-from pprint import pprint
 
 from data import modules
 from db import repository
@@ -32,7 +31,7 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
 
         get_user = list(modules.AdminOption)[int(res["get_user"]) - 1]
 
-        filter_pay, filter_program = None, None
+        filter_pay, filter_program, filter_admin = None, None, None
 
         match get_user:
             case modules.AdminOption.USER_PAY:
@@ -43,6 +42,14 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
                 filter_program = True
             case modules.AdminOption.USER_NOT_IN_PROGRAM:
                 filter_program = False
+            case modules.AdminOption.ADD_ADMIN:
+                filter_admin = False
+            case modules.AdminOption.REMOVE_ADMIN:
+                filter_admin = True
+            case modules.AdminOption.GET_ALL_USERS:
+                pass
+            case modules.AdminOption.REMOVE_USERS:
+                pass
             case _:
                 return
 
@@ -55,7 +62,8 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
                 "event_type": "None",
                 "date": "None",
                 **req.data,
-                **helpers.get_data_users(filter_in_program=filter_program, filter_pay=filter_pay)
+                **helpers.get_data_users(filter_in_program=filter_program, filter_pay=filter_pay,
+                                         filter_is_admin=filter_admin)
             }
         )
 
@@ -155,31 +163,41 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                          *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
                 if repository.is_wa_user_exists(wa_id=user):
                     wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
-                    info_users += wa_user.name
+
+                    info_users += (f"שם: {wa_user.name}\n"
+                                   f"מספר: {wa_user.wa_id}\n"
+                                   f"מנהל: {helpers.replace_bool_to_he(wa_user.admin)}\n"
+                                   f"שילם: {helpers.replace_bool_to_he(wa_user.is_pay)}\n"
+                                   f"במבצע: {helpers.replace_bool_to_he(wa_user.in_program)}\n"
+                                   f"סטטיסטיקות משתמש: \n{helpers.get_data_by_user(wa_id=user)}\n\n"
+                                   )
             if len(info_users) != 0:
                 flow.reply(info_users)
 
         else:
             info_users = ""
 
-            for users in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
-                          *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
-                print(users)
-                for user in users:
-                    if repository.is_wa_user_exists(wa_id=user):
-                        match get_user:
-                            case modules.AdminOption.USER_PAY:
-                                repository.update_user_info(wa_id=user, is_pay=False)
-                            case modules.AdminOption.USER_NOT_PAY:
-                                repository.update_user_info(wa_id=user, is_pay=True)
-                            case modules.AdminOption.USER_IN_PROGRAM:
-                                repository.update_user_info(wa_id=user, in_program=False)
-                            case modules.AdminOption.USER_NOT_IN_PROGRAM:
-                                repository.update_user_info(wa_id=user, in_program=True)
-                            case _:
-                                return
-                        wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
-                        info_users += wa_user.name
+            for user in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
+                         *(res["people_group_3"] or []), *(res["people_group_4"] or [])]:
+                if repository.is_wa_user_exists(wa_id=user):
+                    match get_user:
+                        case modules.AdminOption.USER_PAY:
+                            repository.update_user_info(wa_id=user, is_pay=False)
+                        case modules.AdminOption.USER_NOT_PAY:
+                            repository.update_user_info(wa_id=user, is_pay=True)
+                        case modules.AdminOption.USER_IN_PROGRAM:
+                            repository.update_user_info(wa_id=user, in_program=False)
+                        case modules.AdminOption.USER_NOT_IN_PROGRAM:
+                            repository.update_user_info(wa_id=user, in_program=True)
+                        case modules.AdminOption.REMOVE_ADMIN:
+                            repository.update_user_info(wa_id=user, admin=False)
+                        case modules.AdminOption.ADD_ADMIN:
+                            repository.update_user_info(wa_id=user, admin=True)
+                        case modules.AdminOption.REMOVE_USERS:
+                            repository.del_user(wa_id=wa_id)
+                        case _:
+                            return
+                    info_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
 
             if len(info_users) != 0:
                 flow.reply(info_users)

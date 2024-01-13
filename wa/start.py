@@ -71,10 +71,6 @@ def admin_selection(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
             callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.ADD_USERS)
         ),
         types.SectionRow(
-            title='מחיקת משתמשים',
-            callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.REMOVE_USERS)
-        ),
-        types.SectionRow(
             title='עריכת/קבלת פרטי משתמשים',
             callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.EDIT_AND_GET_DETAILS)
         ),
@@ -97,27 +93,14 @@ def admin_selection(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
 def handle_contact(_: WhatsApp, msg: types.Message):
     wa_id = msg.from_user.wa_id
 
-    get_data = listener.user_id_to_state[wa_id]
-
-    is_admin = get_data["admin"]
-    admin = True if is_admin is True else False
-
     users = ""
     for contact in msg.contacts:
         number = contact.phones[0]
         phone = number.wa_id or number.phone
         name = contact.name.formatted_name
         if not repository.is_wa_user_exists(wa_id=phone):
-            repository.create_user(wa_id=phone, name=name, admin=admin)
+            repository.create_user(wa_id=phone, name=name)
             users += f"{name}\n"
-
-        else:
-            if get_data["add_users"]:
-                if is_admin is not None:
-                    repository.update_user_info(wa_id=phone, admin=admin)
-                    users += f"{name}\n"
-            else:
-                repository.del_user(wa_id=phone)
 
     listener.remove_listener(wa_id=wa_id)
 

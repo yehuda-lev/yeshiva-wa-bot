@@ -161,12 +161,13 @@ def del_event(*, wa_id: str, type_event: modules.EventType, date: datetime.date)
 # admin
 
 
-def get_all_users(pay: bool = None, in_program: bool = None) -> dict[str, tuple[str, int]]:
+def get_all_users(pay: bool = None, in_program: bool = None, is_admin: bool = None) -> dict[str, tuple[str, int]]:
     """
     Get all users
     Args:
         pay: if user pay or not (default None)
         in_program: if user in the program or not (default None)
+        is_admin: if user is admin or not (default None)
     Returns:
          dict[wa_id: tuple[name, id]]
     """
@@ -181,6 +182,10 @@ def get_all_users(pay: bool = None, in_program: bool = None) -> dict[str, tuple[
         ).filter(  # filter in_program
             WaUser.in_program == in_program
             if in_program is not None
+            else True,
+        ).filter(  # filter is_admin
+            WaUser.admin == is_admin
+            if is_admin is not None
             else True,
         )
         dict_users = {}

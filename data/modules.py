@@ -34,6 +34,7 @@ class AdminOption(str, Enum):
     REMOVE_EVENTS = auto()
     ADD_USERS = auto()
     REMOVE_USERS = auto()
+    GET_ALL_USERS = auto()
     ADD_ADMIN = auto()
     REMOVE_ADMIN = auto()
 
