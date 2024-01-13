@@ -26,6 +26,7 @@ class Settings:
     FLOW_ID = os.environ["FLOW_ID"]
     FLOW_STATUS = os.environ["FLOW_STATUS"]
     PRIVATE_KEY = os.environ["PRIVATE_KEY"]
+    PUBLIC_KEY = os.environ["PUBLIC_KEY"]
     PASSWORD_PRIVATE_KEY = os.environ["PASSWORD_PRIVATE_KEY"]
 
 

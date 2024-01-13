@@ -263,11 +263,7 @@ managing_dates_events_and_users = types.FlowJSON(
 # print(update_flow_metadate)
 
 # set_business_public_key = wa.set_business_public_key(
-#     public_key="""-----BEGIN PUBLIC KEY-----
-# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
-# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
-# XYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZXYZ
-# -----END PUBLIC KEY-----"""
+#     public_key=settings.PUBLIC_KEY
 # )
 # print(set_business_public_key)
 
