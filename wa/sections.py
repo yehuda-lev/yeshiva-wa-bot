@@ -145,9 +145,14 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
                     {
                         "id": modules.AdminOption.ADD_ADMIN,
                         "title": "משתמשים שלא מנהלים",
-                    }, {
+                    },
+                    {
                         "id": modules.AdminOption.REMOVE_ADMIN,
                         "title": "משתמשים שמנהלים",
+                    },
+                    {
+                        "id": modules.AdminOption.GET_STATS,
+                        "title": "סטטיסטיקת לימוד",
                     },
                 ]
             }

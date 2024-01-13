@@ -4,9 +4,12 @@ import logging
 from pywa import WhatsApp, types
 from pywa.types import flows
 
-from data import modules
+from data import modules, utils
 from db import repository
 from wa import sections, helpers
+
+
+settings = utils.get_settings()
 
 
 def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse | None:
@@ -46,6 +49,8 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
                 filter_admin = False
             case modules.AdminOption.REMOVE_ADMIN:
                 filter_admin = True
+            case modules.AdminOption.GET_STATS:
+                filter_program = True
             case modules.AdminOption.GET_ALL_USERS:
                 pass
             case modules.AdminOption.REMOVE_USERS:
@@ -164,13 +169,16 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                 if repository.is_wa_user_exists(wa_id=user):
                     wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
 
-                    info_users += (f"שם: {wa_user.name}\n"
-                                   f"מספר: {wa_user.wa_id}\n"
-                                   f"מנהל: {helpers.replace_bool_to_he(wa_user.admin)}\n"
-                                   f"שילם: {helpers.replace_bool_to_he(wa_user.is_pay)}\n"
-                                   f"במבצע: {helpers.replace_bool_to_he(wa_user.in_program)}\n"
-                                   f"סטטיסטיקות משתמש: \n{helpers.get_data_by_user(wa_id=user)}\n\n"
-                                   )
+                    if get_user == modules.AdminOption.GET_STATS:
+                        info_users += f"{wa_user.name}: *{repository.get_events_count_by_wa_id(wa_id=user)}*\n\n"
+                    else:
+                        info_users += (f"שם: {wa_user.name}\n"
+                                       f"מספר: {wa_user.wa_id}\n"
+                                       f"מנהל: {helpers.replace_bool_to_he(wa_user.admin)}\n"
+                                       f"שילם: {helpers.replace_bool_to_he(wa_user.is_pay)}\n"
+                                       f"במבצע: {helpers.replace_bool_to_he(wa_user.in_program)}\n"
+                                       f"סטטיסטיקות משתמש: \n{helpers.get_data_by_user(wa_id=user)}\n\n"
+                                       )
             if len(info_users) != 0:
                 flow.reply(info_users)
 
@@ -190,11 +198,22 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                         case modules.AdminOption.USER_NOT_IN_PROGRAM:
                             repository.update_user_info(wa_id=user, in_program=True)
                         case modules.AdminOption.REMOVE_ADMIN:
-                            repository.update_user_info(wa_id=user, admin=False)
+                            if user in settings.ADMINS.split(","):
+                                info_users += (f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
+                                               f" מניהול בגלל שהוא מנהל ראשי\n")
+                            else:
+                                repository.update_user_info(wa_id=user, admin=False)
+
                         case modules.AdminOption.ADD_ADMIN:
                             repository.update_user_info(wa_id=user, admin=True)
+
                         case modules.AdminOption.REMOVE_USERS:
-                            repository.del_user(wa_id=wa_id)
+                            if user in settings.ADMINS.split(","):
+                                info_users += (f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
+                                               f" בגלל שהוא מנהל ראשי\n")
+                            else:
+                                repository.del_user(wa_id=wa_id)
+
                         case _:
                             return
                     info_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
