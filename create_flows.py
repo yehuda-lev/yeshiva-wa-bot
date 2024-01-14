@@ -135,6 +135,12 @@ managing_dates_events_and_users = types.FlowJSON(
                     example=[flows.DataSource(id="972", title="Yehuda", description="972")]
                 ),
                 data_is_group_4_visible := flows.ScreenData(key="data_is_group_4_visible", example=True),
+
+                data_people_group_5 := flows.ScreenData(
+                    key="data_people_group_5",
+                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                ),
+                data_is_group_5_visible := flows.ScreenData(key="data_is_group_5_visible", example=True),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
@@ -163,6 +169,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 data_source=data_people_group_4.data_key,
                                 visible=data_is_group_4_visible.data_key,
                             ),
+                            people_group_5 := flows.CheckboxGroup(
+                                name="people_group_5",
+                                data_source=data_people_group_5.data_key,
+                                visible=data_is_group_5_visible.data_key,
+                            ),
                             flows.Footer(
                                 label='סיום',
                                 on_click_action=flows.Action(
@@ -170,10 +181,12 @@ managing_dates_events_and_users = types.FlowJSON(
                                     payload={
                                         "event_type": event_type.data_key,
                                         "date": date.data_key,
+
                                         "people_group_1": people_group_1.form_ref,
                                         "people_group_2": people_group_2.form_ref,
                                         "people_group_3": people_group_3.form_ref,
                                         "people_group_4": people_group_4.form_ref,
+                                        "people_group_5": people_group_5.form_ref,
 
                                         "data_type_get_user": data_type_get_user.data_key,
                                         "data_get_user": data_get_user.data_key,
