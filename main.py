@@ -1,14 +1,29 @@
+import logging
 import uvicorn
 from fastapi import FastAPI
-from pywa import WhatsApp
+from pywa import WhatsApp, filters, types
 
 from wa import handlers
 from data.utils import get_settings
 from db import repository
 
 
-app = FastAPI()
+# log config
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.ERROR)
+file_handler = logging.handlers.RotatingFileHandler(
+    filename="bot.log", maxBytes=5 * (2**20), backupCount=1, mode="D"
+)
+file_handler.setLevel(logging.INFO)
+logging.basicConfig(
+    format="Time: %(asctime)s | Level: %(levelname)s | Module: %(module)s | Message: %(message)s",
+    handlers=(console_handler, file_handler),
+)
+logging.getLogger().setLevel(logging.NOTSET)
+_logger = logging.getLogger(__name__)
 
+
+app = FastAPI()
 settings = get_settings()
 
 wa = WhatsApp(
@@ -25,6 +40,12 @@ wa = WhatsApp(
     business_private_key_password=settings.PASSWORD_PRIVATE_KEY,
     verify_timeout=10,
 )
+
+
+@wa.on_message_status(filters.message_status.failed)
+def on_failed_message(_: WhatsApp, status: types.MessageStatus):
+    wa_id = status.from_user.wa_id
+    _logger.error(f"Message failed to send to {wa_id} with error: {status.error}")
 
 
 #  add handlers
