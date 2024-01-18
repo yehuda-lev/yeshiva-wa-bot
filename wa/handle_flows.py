@@ -166,9 +166,9 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
         if type_get_user == "get_info":
             info_users = ""
 
-            for user in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
-                         *(res["people_group_3"] or []), *(res["people_group_4"] or []),
-                         *(res["people_group_5"] or [])]:
+            for user in [*(res.get("people_group_1") or []), *(res.get("people_group_2") or []),
+                         *(res.get("people_group_3") or []), *(res.get("people_group_4") or []),
+                         *(res.get("people_group_5") or [])]:
                 if repository.is_wa_user_exists(wa_id=user):
                     wa_user = repository.get_wa_user_by_wa_id(wa_id=user)
 
@@ -188,9 +188,9 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
         else:
             info_users = ""
 
-            for user in [*(res["people_group_1"] or []), *(res["people_group_2"] or []),
-                         *(res["people_group_3"] or []), *(res["people_group_4"] or []),
-                         *(res["people_group_5"] or [])]:
+            for user in [*(res.get("people_group_1") or []), *(res.get("people_group_2") or []),
+                         *(res.get("people_group_3") or []), *(res.get("people_group_4") or []),
+                         *(res.get("people_group_5") or [])]:
                 if repository.is_wa_user_exists(wa_id=user):
                     match get_user:
                         case modules.AdminOption.USER_PAY:
