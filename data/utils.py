@@ -20,7 +20,6 @@ class Settings:
 
     CALLBACK_URL = os.environ["CALLBACK_URL"]
     WEBHOOK_ENDPOINT = os.environ["WEBHOOK_ENDPOINT"]
-    UNDER_MAINTENANCE = os.environ["UNDER_MAINTENANCE"]
     ADMINS = os.environ["WA_ADMINS"]
 
     FLOW_ID = os.environ["FLOW_ID"]

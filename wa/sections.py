@@ -43,18 +43,20 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
 
 
 def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
+    flow_token = f'get_event_specific_{cbs.from_user.wa_id}'
     cbs.reply(
         text='יצירת אירוע',
         buttons=types.FlowButton(
             title='יצירת אירוע',
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
-            flow_token=f'get_event_specific_{cbs.from_user.wa_id}',
+            flow_token=flow_token,
             mode=settings.FLOW_STATUS,
             flow_action_screen='choose_date_and_type',
             flow_action_payload={
                 "welcome_user": f"שלום {cbs.from_user.name}",
                 "is_event_type_required": False,
+                "my_flow_token": flow_token,
             }
         )
     )
@@ -67,20 +69,20 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
 
     is_create = cbs.data.choose == modules.AdminOption.CREATE_EVENTS
 
+    flow_token = f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}'
     cbs.reply(
         text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
         buttons=types.FlowButton(
             title='open',
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
-            flow_token=f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}',
+            flow_token=flow_token,
             mode=settings.FLOW_STATUS,
             flow_action_screen='choose_date_and_type',
             flow_action_payload={
                 "welcome_user": f"ברוך הבא {cbs.from_user.name}",
                 "is_event_type_required": True,
-                # "default_date": str(int(datetime.datetime.today().timestamp())),
-                # "default_date": datetime.datetime.today().timestamp(),
+                "my_flow_token": flow_token,
             }
         )
     )
@@ -108,13 +110,14 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
+    flow_token = f"get_user_details_{wa_id}"
     cbs.reply(
         text='אנא לחץ על הכפתור למטה בכדי לקבל או לערוך את פרטי המשתמשים',
         buttons=types.FlowButton(
             title='ניהול משתמשים',
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
-            flow_token=f"get_user_details_{wa_id}",
+            flow_token=flow_token,
             mode=settings.FLOW_STATUS,
             flow_action_screen='user_details',
             flow_action_payload={
@@ -154,7 +157,8 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
                         "id": modules.AdminOption.GET_STATS,
                         "title": "סטטיסטיקת לימוד",
                     },
-                ]
+                ],
+                "my_flow_token": flow_token,
             }
         )
     )

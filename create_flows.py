@@ -41,7 +41,7 @@ managing_dates_events_and_users = types.FlowJSON(
             data=[
                 welcome_user := flows.ScreenData(key="welcome_user", example="hello john"),
                 is_event_type_required := flows.ScreenData(key="is_event_type_required", example=True),
-                # default_date := flows.ScreenData(key="default_date", example="1704118927")
+                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
@@ -92,6 +92,7 @@ managing_dates_events_and_users = types.FlowJSON(
                                     payload={
                                         "event_type": event_type.form_ref,
                                         "date": date.form_ref,
+                                        "my_flow_token": my_flow_token.data_key,
                                     }
                                 ),
                             ),
@@ -107,6 +108,7 @@ managing_dates_events_and_users = types.FlowJSON(
             title='בחירת בחורים',
             terminal=True,
             data=[
+                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
                 data_type_get_user := flows.ScreenData(key="type_get_user", example=["get_info"]),
                 data_get_user := flows.ScreenData(key="get_user", example="12"),
                 event_type := flows.ScreenData(key="event_type", example="shachris"),
@@ -190,6 +192,8 @@ managing_dates_events_and_users = types.FlowJSON(
 
                                         "data_type_get_user": data_type_get_user.data_key,
                                         "data_get_user": data_get_user.data_key,
+                                        "my_flow_token": my_flow_token.data_key,
+
                                     }
                                 ),
                             )
@@ -204,6 +208,7 @@ managing_dates_events_and_users = types.FlowJSON(
             title='עריכת פרטי המשתמש',
             terminal=True,
             data=[
+                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
                 data_ask_user_details := flows.ScreenData(
                     key="data_ask_user_details",
                     example=[flows.DataSource(id="972", title="Yehuda")]
@@ -249,6 +254,7 @@ managing_dates_events_and_users = types.FlowJSON(
                                     payload={
                                         "get_user": get_user.form_ref,
                                         "type_get_user": type_get_user.form_ref,
+                                        "my_flow_token": my_flow_token.data_key,
                                     }
                                 ),
                             )

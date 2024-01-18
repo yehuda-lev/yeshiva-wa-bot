@@ -91,8 +91,9 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
     flow.mark_as_read()
     wa_id = flow.from_user.wa_id
     res = flow.response
+    flow_token = res.get("my_flow_token")
 
-    if flow.token.startswith('add_events') or flow.token.startswith('remove_events'):
+    if flow_token.startswith('add_events') or flow_token.startswith('remove_events'):
 
         event_type = modules.EventType[res["event_type"]]
 
@@ -112,7 +113,7 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
 
                 if exists is None:
                     # add events
-                    if flow.token.startswith('add_events'):
+                    if flow_token.startswith('add_events'):
                         repository.create_event(
                             type_event=event_type,
                             date=date,
@@ -122,7 +123,7 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                         list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
 
                 else:
-                    if flow.token.startswith('remove_events'):
+                    if flow_token.startswith('remove_events'):
                         repository.del_event(type_event=event_type, date=date, wa_id=user)
                         list_users += f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
 
@@ -137,10 +138,10 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
             case modules.EventType.SEDER_GIMEL:
                 event_type_he = "סדר ג"
 
-        if flow.token.startswith('remove_events'):
+        if flow_token.startswith('remove_events'):
             text = f"למשתמשים הבאים הוסרו האירועים '{event_type_he}' לפי תאריך {date}\n{list_users}"
 
-        elif flow.token.startswith('add_events'):
+        elif flow_token.startswith('add_events'):
             text = f"למשתמשים הבאים נוספו האירועים '{event_type_he}' לפי תאריך {date}\n{list_users}"
         else:
             return
@@ -150,14 +151,14 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                 text=text
             )
 
-    elif flow.token.startswith('get_event_specific'):
+    elif flow_token.startswith('get_event_specific'):
         date = datetime.date.fromtimestamp(int(res["date"]) / 1000)
 
         flow.reply(
             text=sections.get_event_per_day(wa_id=wa_id, date=date)
         )
 
-    elif flow.token.startswith("get_user_details"):
+    elif flow_token.startswith("get_user_details"):
 
         type_get_user = res["data_type_get_user"][0]
         get_user = list(modules.AdminOption)[int(res["data_get_user"]) - 1]
