@@ -5,7 +5,7 @@ from wa import start, sections, handle_flows, listener
 from data import modules
 
 
-def filter_exists(_: WhatsApp, msg: types.Message) -> bool:
+def filter_exists(_: WhatsApp, msg: types.Message | types.ChatOpened) -> bool:
     """is user exists"""
 
     msg.mark_as_read()
@@ -15,13 +15,25 @@ def filter_exists(_: WhatsApp, msg: types.Message) -> bool:
 
 
 HANDLERS = [
+    handlers.ChatOpenedHandler(
+        start.on_chat_opened,
+        filter_exists,
+    ),
     handlers.MessageHandler(
         start.send_welcome,
         filter_exists,
         filters.text,
-        filters.not_(filters.text.is_command)
+        (
+            filters.text.command("start", prefixes="/")
+            or filters.not_(filters.text.is_command)
+        ),
     ),
-
+    handlers.CallbackButtonHandler(
+        start.send_welcome,
+        lambda _, cbs: cbs.data.choose == modules.UserOption.MENU,
+        factory_before_filters=True,
+        factory=modules.ChooseOptionUser,
+    ),
     handlers.MessageHandler(
         start.handle_contact,
         filter_exists,

@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from pywa import WhatsApp, types
 
 from db import repository
@@ -7,8 +5,9 @@ from data import modules
 from wa import listener
 
 
-def send_welcome(_: WhatsApp, msg: types.Message):
+def send_welcome(_: WhatsApp, msg: types.Message | types.CallbackButton):
     wa_id = msg.from_user.wa_id
+    msg.mark_as_read()
 
     sections = [
         types.SectionRow(
@@ -51,6 +50,19 @@ def send_welcome(_: WhatsApp, msg: types.Message):
                 ),
             ]
         )
+    )
+
+
+def on_chat_opened(_: WhatsApp, msg: types.ChatOpened):
+    msg.reply(
+        text=f"ברוך הבא {msg.from_user.name} 👋\n" f"כיצד נוכל לעזור לך היום?",
+        buttons=[
+            types.Button(
+                title="תפריט ראשי",
+                callback_data=modules.ChooseOptionUser(choose=modules.UserOption.MENU),
+            )
+        ],
+        footer="יהודה לב - צ'אטבוטים ואוטומציה",
     )
 
 

@@ -1,4 +1,4 @@
-pywa==1.15.0
+https://github.com/david-lev/pywa/archive/chat-opened.zip
 cryptography==41.0.7
 uvicorn~=0.25.0
 fastapi~=0.108.0

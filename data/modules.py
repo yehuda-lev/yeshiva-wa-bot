@@ -6,6 +6,7 @@ from pywa import types
 
 class EventType(str, Enum):
     """Type of the event"""
+
     SHACHRIS = auto()
     SEDER_ALEF = auto()
     SEDER_BET = auto()
@@ -13,12 +14,12 @@ class EventType(str, Enum):
 
 
 class UserOption(str, Enum):
-
     # USERS
     GET_EVENT_DAY = auto()
     GET_COUNT_EVENT = auto()
     GET_EVENT_SPECIFIC = auto()
     HELP = auto()
+    MENU = auto()
 
 
 @dataclass(frozen=True, slots=True)
