@@ -23,9 +23,9 @@ HANDLERS = [
         start.send_welcome,
         filter_exists,
         filters.text,
-        (
-            filters.text.command("start", prefixes="/")
-            or filters.not_(filters.text.is_command)
+        filters.any_(
+            filters.text.command("start", prefixes="/"),
+            filters.not_(filters.text.is_command)
         ),
     ),
     handlers.CallbackButtonHandler(

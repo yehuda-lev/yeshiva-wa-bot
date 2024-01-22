@@ -30,52 +30,68 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
         )
 
     elif flow_token.startswith("get_user_details"):
-        res = req.data
+        if req.screen == "user_details":
+            res = req.data
 
-        get_user = list(modules.AdminOption)[int(res["get_user"]) - 1]
+            get_user = list(modules.AdminOption)[int(res["get_user"]) - 1]
 
-        filter_pay, filter_program, filter_admin = None, None, None
+            filter_pay, filter_program, filter_admin = None, None, None
 
-        match get_user:
-            case modules.AdminOption.USER_PAY:
-                filter_pay = True
-            case modules.AdminOption.USER_NOT_PAY:
-                filter_pay = False
-            case modules.AdminOption.USER_IN_PROGRAM:
-                filter_program = True
-            case modules.AdminOption.USER_NOT_IN_PROGRAM:
-                filter_program = False
-            case modules.AdminOption.ADD_ADMIN:
-                filter_admin = False
-            case modules.AdminOption.REMOVE_ADMIN:
-                filter_admin = True
-            case modules.AdminOption.GET_STATS:
-                filter_program = True
-            case modules.AdminOption.GET_ALL_USERS:
-                pass
-            case modules.AdminOption.REMOVE_USERS:
-                pass
-            case _:
-                return
+            match get_user:
+                case modules.AdminOption.USER_PAY:
+                    filter_pay = True
+                case modules.AdminOption.USER_NOT_PAY:
+                    filter_pay = False
+                case modules.AdminOption.USER_IN_PROGRAM:
+                    filter_program = True
+                case modules.AdminOption.USER_NOT_IN_PROGRAM:
+                    filter_program = False
+                case modules.AdminOption.ADD_ADMIN:
+                    filter_admin = False
+                case modules.AdminOption.REMOVE_ADMIN:
+                    filter_admin = True
+                case modules.AdminOption.GET_STATS:
+                    filter_program = True
+                case modules.AdminOption.GET_ALL_USERS:
+                    pass
+                case modules.AdminOption.REMOVE_USERS:
+                    pass
+                case _:
+                    return
 
-        return flows.FlowResponse(
-            version=req.version,
-            close_flow=False,
-            flow_token=req.flow_token,
-            screen="choose_people",
-            data={
-                "event_type": "None",
-                "date": "None",
-                **req.data,
-                **helpers.get_data_users(
-                    filter_in_program=filter_program,
-                    filter_pay=filter_pay,
-                    filter_is_admin=filter_admin,
-                ),
-            },
-        )
+            return flows.FlowResponse(
+                version=req.version,
+                close_flow=False,
+                flow_token=req.flow_token,
+                screen="choose_people",
+                data={
+                    "event_type": "None",
+                    "date": "None",
+                    **req.data,
+                    **helpers.get_data_users(
+                        filter_in_program=filter_program,
+                        filter_pay=filter_pay,
+                        filter_is_admin=filter_admin,
+                    ),
+                },
+            )
+        elif req.screen == "choose_people":
+            res = req.data
+            print(res)
+            if res["type_get_user"] == modules.AdminOption.GET_ALL_USERS:
+                if res[res["type_get_user"]] == "edit_info":
+                    pass
 
-    else:
+            return flows.FlowResponse(
+                version=req.version,
+                close_flow=True,
+                flow_token=req.flow_token,
+                data={
+                    **req.data,
+                },
+            )
+
+    else:  # from screen `choose_date_and_type`
         return flows.FlowResponse(
             version=req.version,
             close_flow=False,

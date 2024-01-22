@@ -5,7 +5,6 @@ from pprint import pprint
 from data.utils import get_settings
 from data import modules
 
-
 settings = get_settings()
 
 wa = WhatsApp(
@@ -25,13 +24,18 @@ flow_id = settings.FLOW_ID
 print(flow_id)
 # pprint(wa.get_flow(flow_id=flow_id))
 
+example_people_group = [flows.DataSource(id="972", title="Yehuda", description="972")]
 
 managing_dates_events_and_users = types.FlowJSON(
     version=utils.Version.FLOW_JSON,
     data_api_version=utils.Version.FLOW_DATA_API,
     routing_model={
         "choose_date_and_type": ["choose_people"],
+        # "user_details": ["choose_people", "user_details_edit"],
+        # "user_details_edit": [""],
         "user_details": ["choose_people"],
+        # "choose_people": ["user_details", "user_details_edit", "choose_date_and_type"]
+        "choose_people": ["user_details_edit"]
     },
     screens=[
         flows.Screen(
@@ -107,7 +111,7 @@ managing_dates_events_and_users = types.FlowJSON(
         flows.Screen(
             id="choose_people",
             title="בחירת בחורים",
-            terminal=True,
+            terminal=False,
             data=[
                 my_flow_token := flows.ScreenData(
                     key="my_flow_token", example="add_event"
@@ -120,45 +124,35 @@ managing_dates_events_and_users = types.FlowJSON(
                 date := flows.ScreenData(key="date", example="30/12/32023"),
                 data_people_group_1 := flows.ScreenData(
                     key="data_people_group_1",
-                    example=[
-                        flows.DataSource(id="972", title="Yehuda", description="972")
-                    ],
+                    example=example_people_group,
                 ),
                 data_is_group_1_visible := flows.ScreenData(
                     key="data_is_group_1_visible", example=True
                 ),
                 data_people_group_2 := flows.ScreenData(
                     key="data_people_group_2",
-                    example=[
-                        flows.DataSource(id="972", title="Yehuda", description="972")
-                    ],
+                    example=example_people_group,
                 ),
                 data_is_group_2_visible := flows.ScreenData(
                     key="data_is_group_2_visible", example=True
                 ),
                 data_people_group_3 := flows.ScreenData(
                     key="data_people_group_3",
-                    example=[
-                        flows.DataSource(id="972", title="Yehuda", description="972")
-                    ],
+                    example=example_people_group,
                 ),
                 data_is_group_3_visible := flows.ScreenData(
                     key="data_is_group_3_visible", example=True
                 ),
                 data_people_group_4 := flows.ScreenData(
                     key="data_people_group_4",
-                    example=[
-                        flows.DataSource(id="972", title="Yehuda", description="972")
-                    ],
+                    example=example_people_group,
                 ),
                 data_is_group_4_visible := flows.ScreenData(
                     key="data_is_group_4_visible", example=True
                 ),
                 data_people_group_5 := flows.ScreenData(
                     key="data_people_group_5",
-                    example=[
-                        flows.DataSource(id="972", title="Yehuda", description="972")
-                    ],
+                    example=example_people_group,
                 ),
                 data_is_group_5_visible := flows.ScreenData(
                     key="data_is_group_5_visible", example=True
@@ -199,7 +193,7 @@ managing_dates_events_and_users = types.FlowJSON(
                             flows.Footer(
                                 label="סיום",
                                 on_click_action=flows.Action(
-                                    name=flows.FlowActionType.COMPLETE,
+                                    name=flows.FlowActionType.DATA_EXCHANGE,
                                     payload={
                                         "event_type": event_type.data_key,
                                         "date": date.data_key,
@@ -253,13 +247,13 @@ managing_dates_events_and_users = types.FlowJSON(
                                         id="get_info",
                                         title="קבלת פרטים",
                                         description="קבלת פרטים על משתמשים.\n"
-                                        "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע",
+                                                    "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע",
                                     ),
                                     flows.DataSource(
                                         id="edit_info",
                                         title="שינוי פרטים",
                                         description="עריכת פרטים של משתמשים.\n"
-                                        "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע",
+                                                    "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע",
                                     ),
                                 ],
                             ),
@@ -279,18 +273,185 @@ managing_dates_events_and_users = types.FlowJSON(
                 ],
             ),
         ),
+        flows.Screen(
+            id="edit_user_details",
+            title="עריכת פרטי משתמש",
+            terminal=True,
+            data=[
+                my_flow_token := flows.ScreenData(
+                    key="my_flow_token", example="add_event"
+                ),
+                get_text_1 := flows.ScreenData(
+                    key="get_text_1", example="אנא שנה את השם של יהודה לב"
+                ),
+                get_init_value_text_1 := flows.ScreenData(
+                    key="get_init_value_text_1", example="יהודה לב"
+                ),
+                get_phone_1 := flows.ScreenData(
+                    key="get_phone_1", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                ),
+                get_init_value_phone_1 := flows.ScreenData(
+                    key="get_init_value_phone_1", example=9721111
+                ),
+                is_input_1_visible := flows.ScreenData(
+                    key="is_input_1_visible", example=True
+                ),
+
+                get_text_2 := flows.ScreenData(
+                    key="get_text_2", example="אנא שנה את השם של יהודה לב"
+                ),
+                get_init_value_text_2 := flows.ScreenData(
+                    key="get_init_value_text_2", example="יהודה לב"
+                ),
+                get_phone_2 := flows.ScreenData(
+                    key="get_phone_2", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                ),
+                get_init_value_phone_2 := flows.ScreenData(
+                    key="get_init_value_phone_2", example=9721111
+                ),
+                is_input_2_visible := flows.ScreenData(
+                    key="is_input_2_visible", example=True
+                ),
+
+                get_text_3 := flows.ScreenData(
+                    key="get_text_3", example="אנא שנה את השם של יהודה לב"
+                ),
+                get_init_value_text_3 := flows.ScreenData(
+                    key="get_init_value_text_3", example="יהודה לב"
+                ),
+                get_phone_3 := flows.ScreenData(
+                    key="get_phone_3", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                ),
+                get_init_value_phone_3 := flows.ScreenData(
+                    key="get_init_value_phone_3", example=9721111
+                ),
+                is_input_3_visible := flows.ScreenData(
+                    key="is_input_3_visible", example=True
+                ),
+
+                get_text_4 := flows.ScreenData(
+                    key="get_text_4", example="אנא שנה את השם של יהודה לב"
+                ),
+                get_init_value_text_4 := flows.ScreenData(
+                    key="get_init_value_text_4", example="יהודה לב"
+                ),
+                get_phone_4 := flows.ScreenData(
+                    key="get_phone_4", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                ),
+                get_init_value_phone_4 := flows.ScreenData(
+                    key="get_init_value_phone_4", example=9721111
+                ),
+                is_input_4_visible := flows.ScreenData(
+                    key="is_input_4_visible", example=True
+                ),
+
+            ],
+            layout=flows.Layout(
+                type=flows.LayoutType.SINGLE_COLUMN,
+                children=[
+                    flows.Form(
+                        name="form",
+                        children=[
+                            input_name_1 := flows.TextInput(
+                                name="input_name_1",
+                                label=get_text_1.data_key,
+                                input_type=flows.InputType.TEXT,
+                                init_value=get_init_value_text_1.data_key,
+                                visible=is_input_1_visible.data_key
+                            ),
+                            input_phone_1 := flows.TextInput(
+                                name="input_phone_1",
+                                label=get_phone_1.data_key,
+                                input_type=flows.InputType.PHONE,
+                                init_value=get_init_value_phone_1.data_key,
+                                visible=is_input_1_visible.data_key
+                            ),
+
+                            input_name_2 := flows.TextInput(
+                                name="input_name_2",
+                                label=get_text_2.data_key,
+                                input_type=flows.InputType.TEXT,
+                                init_value=get_init_value_text_2.data_key,
+                                visible=is_input_2_visible.data_key
+                            ),
+                            input_phone_2 := flows.TextInput(
+                                name="input_phone_2",
+                                label=get_phone_2.data_key,
+                                input_type=flows.InputType.PHONE,
+                                init_value=get_init_value_phone_2.data_key,
+                                visible=is_input_2_visible.data_key
+                            ),
+
+                            input_name_3 := flows.TextInput(
+                                name="input_name_3",
+                                label=get_text_3.data_key,
+                                input_type=flows.InputType.TEXT,
+                                init_value=get_init_value_text_3.data_key,
+                                visible=is_input_3_visible.data_key
+                            ),
+                            input_phone_3 := flows.TextInput(
+                                name="input_phone_3",
+                                label=get_phone_3.data_key,
+                                input_type=flows.InputType.PHONE,
+                                init_value=get_init_value_phone_3.data_key,
+                                visible=is_input_3_visible.data_key
+                            ),
+                            input_name_4 := flows.TextInput(
+                                name="input_name_4",
+                                label=get_text_4.data_key,
+                                input_type=flows.InputType.TEXT,
+                                init_value=get_init_value_text_4.data_key,
+                                visible=is_input_4_visible.data_key
+                            ),
+                            input_phone_4 := flows.TextInput(
+                                name="input_phone_4",
+                                label=get_phone_4.data_key,
+                                input_type=flows.InputType.PHONE,
+                                init_value=get_init_value_phone_4.data_key,
+                                visible=is_input_4_visible.data_key
+                            ),
+
+                            flows.Footer(
+                                label="המשך",
+                                on_click_action=flows.Action(
+                                    name=flows.FlowActionType.COMPLETE,
+                                    payload={
+                                        "input_name_1": input_name_1.form_ref,
+                                        "input_phone_1": input_phone_1.form_ref,
+                                        "input_name_2": input_name_2.form_ref,
+                                        "input_phone_2": input_phone_2.form_ref,
+                                        "input_name_3": input_name_3.form_ref,
+                                        "input_phone_3": input_phone_3.form_ref,
+                                        "input_name_4": input_name_4.form_ref,
+                                        "input_phone_4": input_phone_4.form_ref,
+
+                                        "my_flow_token": my_flow_token.data_key,
+                                    },
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ),
     ],
 )
 
 # print(json.dumps(customer_satisfaction_survey.to_dict()))
 # pprint(managing_dates_events_and_users)
 
-# try:
-#     edit_flow = wa.update_flow_json(flow_id=flow_id, flow_json=managing_dates_events_and_users)
-#     pprint(edit_flow)
-# except errors.FlowUpdatingError:
-#     print("Error updating flow")
-#     pprint(wa.get_flow(flow_id=flow_id).validation_errors)
+try:
+    edit_flow = wa.update_flow_json(
+        flow_id=flow_id,
+        flow_json=managing_dates_events_and_users
+    )
+    if isinstance(edit_flow[1][0], flows.FlowValidationError):
+        pprint(edit_flow[1][0])
+except IndexError:
+    print("Flow updated successfully")
+except errors.FlowUpdatingError:
+    print("Error updating flow")
+    pprint(wa.get_flow(flow_id=flow_id).validation_errors)
 
 # update_flow_metadate = wa.update_flow_metadata(
 #     flow_id=flow_id,
