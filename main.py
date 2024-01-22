@@ -56,7 +56,7 @@ for handler in handlers.HANDLERS:
 # add admins
 for admin in settings.ADMINS.split(","):
     if not repository.is_wa_user_exists(wa_id=admin):
-        repository.create_user(wa_id=admin, name='admin', admin=True)
+        repository.create_user(wa_id=admin, name="admin", admin=True)
     else:
         if not repository.is_wa_user_admin(wa_id=admin):
             repository.update_user_info(wa_id=admin, admin=True)

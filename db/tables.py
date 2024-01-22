@@ -1,19 +1,23 @@
 from __future__ import annotations
 import datetime
 from contextlib import contextmanager
-from sqlalchemy import (String, create_engine, ForeignKey)
-from sqlalchemy.orm import (Mapped, mapped_column, DeclarativeBase, sessionmaker, relationship)
+from sqlalchemy import String, create_engine, ForeignKey
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    DeclarativeBase,
+    sessionmaker,
+    relationship,
+)
 
 from data import modules
 
 
 engine = create_engine(
     url="sqlite:///db.sqlite",
-    # url='sqlite:///../db.sqlite',  # test
     pool_size=20,
     max_overflow=10,
     pool_timeout=30,
-    # echo=True,
 )
 
 Session = sessionmaker(bind=engine)
@@ -45,9 +49,7 @@ class WaUser(BaseTable):
     is_pay: Mapped[bool]
     in_program: Mapped[bool]
     created_at: Mapped[datetime.datetime]
-    events: Mapped[list[Event]] = relationship(
-        back_populates="by_wa_user"
-    )
+    events: Mapped[list[Event]] = relationship(back_populates="by_wa_user")
 
 
 class Event(BaseTable):
@@ -60,9 +62,7 @@ class Event(BaseTable):
     date: Mapped[datetime.date]
 
     by_wa_user_id: Mapped[int | None] = mapped_column(ForeignKey("wa_user.id"))
-    by_wa_user: Mapped[WaUser | None] = relationship(
-        back_populates="events"
-    )
+    by_wa_user: Mapped[WaUser | None] = relationship(back_populates="events")
 
     added_by_admin: Mapped[str] = mapped_column(String(20))
 

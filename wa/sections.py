@@ -11,16 +11,26 @@ settings = utils.get_settings()
 
 
 def get_event_per_day(wa_id: str, date: datetime.date.today) -> str:
-    shahris = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SHACHRIS, date=date)
-    seder_a = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_ALEF, date=date)
-    seder_b = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_BET, date=date)
-    seder_g = repository.get_event(wa_id=wa_id, type_event=modules.EventType.SEDER_GIMEL, date=date)
+    shahris = repository.get_event(
+        wa_id=wa_id, type_event=modules.EventType.SHACHRIS, date=date
+    )
+    seder_a = repository.get_event(
+        wa_id=wa_id, type_event=modules.EventType.SEDER_ALEF, date=date
+    )
+    seder_b = repository.get_event(
+        wa_id=wa_id, type_event=modules.EventType.SEDER_BET, date=date
+    )
+    seder_g = repository.get_event(
+        wa_id=wa_id, type_event=modules.EventType.SEDER_GIMEL, date=date
+    )
 
-    return (f'למדת בתאריך {date}:\n'
-            f'שחרית: {"❌" if shahris is None else "✅"}\n'
-            f'סדר א: {"❌" if seder_a is None else "✅"}\n'
-            f'סדר ב: {"❌" if seder_b is None else "✅"}\n'
-            f'סדר ג: {"❌" if seder_g is None else "✅"}\n')
+    return (
+        f'למדת בתאריך {date}:\n'
+        f'שחרית: {"❌" if shahris is None else "✅"}\n'
+        f'סדר א: {"❌" if seder_a is None else "✅"}\n'
+        f'סדר ב: {"❌" if seder_b is None else "✅"}\n'
+        f'סדר ג: {"❌" if seder_g is None else "✅"}\n'
+    )
 
 
 def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
@@ -29,12 +39,12 @@ def get_event_day(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOption
 
     date = datetime.date.today()
 
-    cbs.reply(
-        text=get_event_per_day(wa_id=wa_id, date=date)
-    )
+    cbs.reply(text=get_event_per_day(wa_id=wa_id, date=date))
 
 
-def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
+def get_count_event(
+    _: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]
+):
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
@@ -42,29 +52,34 @@ def get_count_event(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOpti
     cbs.reply(text=f"למדת \n{text_data}")
 
 
-def get_event_specific(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]):
-    flow_token = f'get_event_specific_{cbs.from_user.wa_id}'
+def get_event_specific(
+    _: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]
+):
+    flow_token = f"get_event_specific_{cbs.from_user.wa_id}"
     cbs.reply(
-        text='יצירת אירוע',
+        text="יצירת אירוע",
         buttons=types.FlowButton(
-            title='יצירת אירוע',
+            title="יצירת אירוע",
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=flow_token,
             mode=settings.FLOW_STATUS,
-            flow_action_screen='choose_date_and_type',
+            flow_action_screen="choose_date_and_type",
             flow_action_payload={
                 "welcome_user": f"שלום {cbs.from_user.name}",
                 "is_event_type_required": False,
                 "my_flow_token": flow_token,
-            }
-        )
+            },
+        ),
     )
 
 
 # admin
 
-def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
+
+def add_and_remove_events(
+    _: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]
+):
     cbs.mark_as_read()
 
     is_create = cbs.data.choose == modules.AdminOption.CREATE_EVENTS
@@ -73,18 +88,18 @@ def add_and_remove_events(_: WhatsApp, cbs: types.CallbackSelection[modules.Choo
     cbs.reply(
         text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
         buttons=types.FlowButton(
-            title='open',
+            title="open",
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=flow_token,
             mode=settings.FLOW_STATUS,
-            flow_action_screen='choose_date_and_type',
+            flow_action_screen="choose_date_and_type",
             flow_action_payload={
                 "welcome_user": f"ברוך הבא {cbs.from_user.name}",
                 "is_event_type_required": True,
                 "my_flow_token": flow_token,
-            }
-        )
+            },
+        ),
     )
 
 
@@ -93,33 +108,37 @@ def add_users(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmi
     wa_id = cbs.from_user.wa_id
 
     # add listener
-    listener.add_listener(
-        wa_id=wa_id,
-        data={"add_users": True}
-    )
+    listener.add_listener(wa_id=wa_id, data={"add_users": True})
 
     cbs.reply(
         text="אנא שלח לי את האנשי קשר שברצונך להוסיף",
         buttons=[
-            types.Button(title="ביטול", callback_data=modules.ChooseOptionAdmin(choose=modules.AdminOption.CANCEL))
-        ]
+            types.Button(
+                title="ביטול",
+                callback_data=modules.ChooseOptionAdmin(
+                    choose=modules.AdminOption.CANCEL
+                ),
+            )
+        ],
     )
 
 
-def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
+def handle_user_details(
+    _: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]
+):
     cbs.mark_as_read()
     wa_id = cbs.from_user.wa_id
 
     flow_token = f"get_user_details_{wa_id}"
     cbs.reply(
-        text='אנא לחץ על הכפתור למטה בכדי לקבל או לערוך את פרטי המשתמשים',
+        text="אנא לחץ על הכפתור למטה בכדי לקבל או לערוך את פרטי המשתמשים",
         buttons=types.FlowButton(
-            title='ניהול משתמשים',
+            title="ניהול משתמשים",
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=flow_token,
             mode=settings.FLOW_STATUS,
-            flow_action_screen='user_details',
+            flow_action_screen="user_details",
             flow_action_payload={
                 "data_ask_user_details": [
                     {
@@ -137,7 +156,8 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
                     {
                         "id": modules.AdminOption.USER_NOT_PAY,
                         "title": "משתמשים שלא שילמו",
-                    }, {
+                    },
+                    {
                         "id": modules.AdminOption.GET_ALL_USERS,
                         "title": "כל המשתמשים",
                     },
@@ -159,8 +179,8 @@ def handle_user_details(_: WhatsApp, cbs: types.CallbackSelection[modules.Choose
                     },
                 ],
                 "my_flow_token": flow_token,
-            }
-        )
+            },
+        ),
     )
 
 

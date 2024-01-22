@@ -1,5 +1,4 @@
-
-user_id_to_state: dict[str: dict] = {}
+user_id_to_state: dict[str:dict] = {}
 """example: {wa_id: {remove_user}}"""
 
 

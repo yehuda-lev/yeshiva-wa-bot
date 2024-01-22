@@ -38,9 +38,8 @@ HANDLERS = [
         start.handle_contact,
         filter_exists,
         filters.contacts,
-        lambda _, msg: listener.status_answer(wa_id=msg.from_user.wa_id)
+        lambda _, msg: listener.status_answer(wa_id=msg.from_user.wa_id),
     ),
-
     # callback selection
     handlers.CallbackSelectionHandler(
         sections.get_event_day,
@@ -60,7 +59,6 @@ HANDLERS = [
         factory_before_filters=True,
         factory=modules.ChooseOptionUser,
     ),
-
     # admin
     handlers.CallbackSelectionHandler(
         start.admin_selection,
@@ -70,8 +68,10 @@ HANDLERS = [
     ),
     handlers.CallbackSelectionHandler(
         sections.add_and_remove_events,
-        lambda _, cbs: (cbs.data.choose == modules.AdminOption.CREATE_EVENTS
-                        or cbs.data.choose == modules.AdminOption.REMOVE_EVENTS),
+        lambda _, cbs: (
+            cbs.data.choose == modules.AdminOption.CREATE_EVENTS
+            or cbs.data.choose == modules.AdminOption.REMOVE_EVENTS
+        ),
         factory_before_filters=True,
         factory=modules.ChooseOptionAdmin,
     ),
@@ -93,17 +93,14 @@ HANDLERS = [
         factory_before_filters=True,
         factory=modules.ChooseOptionUser,
     ),
-
     # flows
     handlers.FlowRequestHandler(
         handle_flows.get_request_flow,
-        endpoint='/support_request_flow',
+        endpoint="/support_request_flow",
     ),
-
     handlers.FlowCompletionHandler(
         handle_flows.get_completion_flow,
     ),
-
     # callback button
     handlers.CallbackButtonHandler(
         start.cancel,

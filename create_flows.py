@@ -35,122 +35,142 @@ managing_dates_events_and_users = types.FlowJSON(
     },
     screens=[
         flows.Screen(
-            id='choose_date_and_type',
-            title='בחירת תאריך וסוג האירוע',
+            id="choose_date_and_type",
+            title="בחירת תאריך וסוג האירוע",
             terminal=False,
             data=[
-                welcome_user := flows.ScreenData(key="welcome_user", example="hello john"),
-                is_event_type_required := flows.ScreenData(key="is_event_type_required", example=True),
-                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
+                welcome_user := flows.ScreenData(
+                    key="welcome_user", example="hello john"
+                ),
+                is_event_type_required := flows.ScreenData(
+                    key="is_event_type_required", example=True
+                ),
+                my_flow_token := flows.ScreenData(
+                    key="my_flow_token", example="add_event"
+                ),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
                 children=[
                     flows.Form(
-                        name='Form',
+                        name="Form",
                         children=[
                             flows.TextHeading(text=welcome_user.data_key),
-
-                            flows.TextBody(text='נא לבחור את סוג הלימוד'),
+                            flows.TextBody(text="נא לבחור את סוג הלימוד"),
                             event_type := flows.RadioButtonsGroup(
-                                name='event_type',
-                                label='סוג הלימוד',
+                                name="event_type",
+                                label="סוג הלימוד",
                                 data_source=[
                                     flows.DataSource(
                                         id=modules.EventType.SHACHRIS.name,
-                                        title='שחרית'
+                                        title="שחרית",
                                     ),
                                     flows.DataSource(
                                         id=modules.EventType.SEDER_ALEF.name,
-                                        title='סדר א'
+                                        title="סדר א",
                                     ),
                                     flows.DataSource(
                                         id=modules.EventType.SEDER_BET.name,
-                                        title='סדר ב'
+                                        title="סדר ב",
                                     ),
                                     flows.DataSource(
                                         id=modules.EventType.SEDER_GIMEL.name,
-                                        title='סדר ג'
+                                        title="סדר ג",
                                     ),
                                 ],
                                 required=is_event_type_required.data_key,
                             ),
-
-                            flows.TextBody(text='נא לבחור את התאריך'),
+                            flows.TextBody(text="נא לבחור את התאריך"),
                             date := flows.DatePicker(
-                                name='date',
-                                label='תאריך',
+                                name="date",
+                                label="תאריך",
                                 # init_value=default_date.data_key,
                                 # init_value=str(datetime.datetime.today().timestamp()),
                                 required=True,
                             ),
-
                             flows.Footer(
-                                label='המשך',
+                                label="המשך",
                                 on_click_action=flows.Action(
                                     name=flows.FlowActionType.DATA_EXCHANGE,
                                     payload={
                                         "event_type": event_type.form_ref,
                                         "date": date.form_ref,
                                         "my_flow_token": my_flow_token.data_key,
-                                    }
+                                    },
                                 ),
                             ),
                         ],
-
                     )
-                ]
+                ],
             ),
         ),
-
         flows.Screen(
-            id='choose_people',
-            title='בחירת בחורים',
+            id="choose_people",
+            title="בחירת בחורים",
             terminal=True,
             data=[
-                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
-                data_type_get_user := flows.ScreenData(key="type_get_user", example=["get_info"]),
+                my_flow_token := flows.ScreenData(
+                    key="my_flow_token", example="add_event"
+                ),
+                data_type_get_user := flows.ScreenData(
+                    key="type_get_user", example=["get_info"]
+                ),
                 data_get_user := flows.ScreenData(key="get_user", example="12"),
                 event_type := flows.ScreenData(key="event_type", example="shachris"),
                 date := flows.ScreenData(key="date", example="30/12/32023"),
-
                 data_people_group_1 := flows.ScreenData(
                     key="data_people_group_1",
-                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                    example=[
+                        flows.DataSource(id="972", title="Yehuda", description="972")
+                    ],
                 ),
-                data_is_group_1_visible := flows.ScreenData(key="data_is_group_1_visible", example=True),
-
+                data_is_group_1_visible := flows.ScreenData(
+                    key="data_is_group_1_visible", example=True
+                ),
                 data_people_group_2 := flows.ScreenData(
                     key="data_people_group_2",
-                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                    example=[
+                        flows.DataSource(id="972", title="Yehuda", description="972")
+                    ],
                 ),
-                data_is_group_2_visible := flows.ScreenData(key="data_is_group_2_visible", example=True),
-
+                data_is_group_2_visible := flows.ScreenData(
+                    key="data_is_group_2_visible", example=True
+                ),
                 data_people_group_3 := flows.ScreenData(
                     key="data_people_group_3",
-                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                    example=[
+                        flows.DataSource(id="972", title="Yehuda", description="972")
+                    ],
                 ),
-                data_is_group_3_visible := flows.ScreenData(key="data_is_group_3_visible", example=True),
-
+                data_is_group_3_visible := flows.ScreenData(
+                    key="data_is_group_3_visible", example=True
+                ),
                 data_people_group_4 := flows.ScreenData(
                     key="data_people_group_4",
-                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                    example=[
+                        flows.DataSource(id="972", title="Yehuda", description="972")
+                    ],
                 ),
-                data_is_group_4_visible := flows.ScreenData(key="data_is_group_4_visible", example=True),
-
+                data_is_group_4_visible := flows.ScreenData(
+                    key="data_is_group_4_visible", example=True
+                ),
                 data_people_group_5 := flows.ScreenData(
                     key="data_people_group_5",
-                    example=[flows.DataSource(id="972", title="Yehuda", description="972")]
+                    example=[
+                        flows.DataSource(id="972", title="Yehuda", description="972")
+                    ],
                 ),
-                data_is_group_5_visible := flows.ScreenData(key="data_is_group_5_visible", example=True),
+                data_is_group_5_visible := flows.ScreenData(
+                    key="data_is_group_5_visible", example=True
+                ),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
                 children=[
                     flows.Form(
-                        name='form',
+                        name="form",
                         children=[
-                            flows.TextBody(text='נא לבחור את המשתמשים'),
+                            flows.TextBody(text="נא לבחור את המשתמשים"),
                             people_group_1 := flows.CheckboxGroup(
                                 name="people_group_1",
                                 data_source=data_people_group_1.data_key,
@@ -177,48 +197,46 @@ managing_dates_events_and_users = types.FlowJSON(
                                 visible=data_is_group_5_visible.data_key,
                             ),
                             flows.Footer(
-                                label='סיום',
+                                label="סיום",
                                 on_click_action=flows.Action(
                                     name=flows.FlowActionType.COMPLETE,
                                     payload={
                                         "event_type": event_type.data_key,
                                         "date": date.data_key,
-
                                         "people_group_1": people_group_1.form_ref,
                                         "people_group_2": people_group_2.form_ref,
                                         "people_group_3": people_group_3.form_ref,
                                         "people_group_4": people_group_4.form_ref,
                                         "people_group_5": people_group_5.form_ref,
-
                                         "data_type_get_user": data_type_get_user.data_key,
                                         "data_get_user": data_get_user.data_key,
                                         "my_flow_token": my_flow_token.data_key,
-
-                                    }
+                                    },
                                 ),
-                            )
+                            ),
                         ],
                     )
-                ]
+                ],
             ),
         ),
-
         flows.Screen(
-            id='user_details',
-            title='עריכת פרטי המשתמש',
+            id="user_details",
+            title="עריכת פרטי המשתמש",
             terminal=True,
             data=[
-                my_flow_token := flows.ScreenData(key="my_flow_token", example="add_event"),
+                my_flow_token := flows.ScreenData(
+                    key="my_flow_token", example="add_event"
+                ),
                 data_ask_user_details := flows.ScreenData(
                     key="data_ask_user_details",
-                    example=[flows.DataSource(id="972", title="Yehuda")]
+                    example=[flows.DataSource(id="972", title="Yehuda")],
                 ),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
                 children=[
                     flows.Form(
-                        name='form',
+                        name="form",
                         children=[
                             get_user := flows.Dropdown(
                                 name="ניהול משתמשים",
@@ -226,9 +244,8 @@ managing_dates_events_and_users = types.FlowJSON(
                                 required=True,
                                 data_source=data_ask_user_details.data_key,
                             ),
-
                             type_get_user := flows.CheckboxGroup(
-                                name='מה ברצונך לעשות',
+                                name="מה ברצונך לעשות",
                                 max_selected_items=1,
                                 required=True,
                                 data_source=[
@@ -236,34 +253,33 @@ managing_dates_events_and_users = types.FlowJSON(
                                         id="get_info",
                                         title="קבלת פרטים",
                                         description="קבלת פרטים על משתמשים.\n"
-                                                    "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע"
+                                        "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע",
                                     ),
                                     flows.DataSource(
                                         id="edit_info",
                                         title="שינוי פרטים",
                                         description="עריכת פרטים של משתמשים.\n"
-                                                    "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע"
+                                        "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע",
                                     ),
-                                ]
+                                ],
                             ),
-
                             flows.Footer(
-                                label='המשך',
+                                label="המשך",
                                 on_click_action=flows.Action(
                                     name=flows.FlowActionType.DATA_EXCHANGE,
                                     payload={
                                         "get_user": get_user.form_ref,
                                         "type_get_user": type_get_user.form_ref,
                                         "my_flow_token": my_flow_token.data_key,
-                                    }
+                                    },
                                 ),
-                            )
+                            ),
                         ],
                     )
-                ]
+                ],
             ),
-        )
-    ]
+        ),
+    ],
 )
 
 # print(json.dumps(customer_satisfaction_survey.to_dict()))
