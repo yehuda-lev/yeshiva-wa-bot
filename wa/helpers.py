@@ -92,3 +92,28 @@ def get_data_by_user(wa_id: str) -> str:
 
 def replace_bool_to_he(param: bool) -> str:
     return "כן" if param else "לא"
+
+
+def get_data_screen_edit_users_details(input_num: int, user_id: str = None) -> dict:
+    get_caption_text = ""
+    get_init_value_text = ""
+    get_caption_phone = ""
+    get_init_value_phone = ""
+    is_input_visible = False
+
+    if user_id is not None:
+        if repository.is_wa_user_exists(wa_id=user_id):
+            user = repository.get_wa_user_by_wa_id(wa_id=user_id)
+            get_caption_text = f"אנא שנה את השם של {user.name}"
+            get_init_value_text = user.name
+            get_caption_phone = f"אנא שנה את המספר של {user.name} מ {user.wa_id}"
+            get_init_value_phone = str(user.wa_id)
+            is_input_visible = True
+
+    return {
+        f"get_caption_text_{input_num}": get_caption_text,
+        f"get_init_value_text_{input_num}": get_init_value_text,
+        f"get_caption_phone_{input_num}": get_caption_phone,
+        f"get_init_value_phone_{input_num}": get_init_value_phone,
+        f"is_input_{input_num}_visible": is_input_visible,
+    }

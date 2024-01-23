@@ -59,7 +59,7 @@ for admin in settings.ADMINS.split(","):
         repository.create_user(wa_id=admin, name="admin", admin=True)
     else:
         if not repository.is_wa_user_admin(wa_id=admin):
-            repository.update_user_info(wa_id=admin, admin=True)
+            repository.update_user_info(user_wa_id=admin, admin=True)
 
 
 uvicorn.run(app, port=8080, access_log=False)
