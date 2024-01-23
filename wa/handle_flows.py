@@ -1,6 +1,6 @@
 import datetime
 import logging
-
+import sqlalchemy
 from pywa import WhatsApp, types
 from pywa.types import flows
 
@@ -19,7 +19,9 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
 
     flow_token = req.flow_token
 
-    if flow_token.startswith("get_event_specific"):
+    if (flow_token.startswith("get_event_specific")
+            or flow_token.startswith("add_events")
+            or flow_token.startswith("remove_events")):
         return flows.FlowResponse(
             version=req.version,
             close_flow=True,
@@ -77,10 +79,36 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
             )
         elif req.screen == "choose_people":
             res = req.data
-            print(res)
-            if res["type_get_user"] == modules.AdminOption.GET_ALL_USERS:
-                if res[res["type_get_user"]] == "edit_info":
-                    pass
+            if res["data_get_user"] == modules.AdminOption.GET_ALL_USERS:
+                if res["data_type_get_user"][0] == "edit_info":
+
+                    list_users = [
+                        *(res.get("people_group_1") or []),
+                        *(res.get("people_group_2") or []),
+                        *(res.get("people_group_3") or []),
+                        *(res.get("people_group_4") or []),
+                        *(res.get("people_group_5") or []),
+                    ]
+                    size = min(len(list_users), 4)
+                    list_users = [None] * (4 - size) + list_users[:size]
+
+                    data_users = {}
+                    for num in range(1, 5):
+                        data_users.update(
+                            **
+                            helpers.get_data_screen_edit_users_details(input_num=num, user_id=list_users[num - 1])
+                        )
+                    return flows.FlowResponse(
+                        version=req.version,
+
+                        close_flow=False,
+                        screen="edit_user_details",
+                        flow_token=req.flow_token,
+                        data={
+                            **req.data,
+                            **data_users,
+                        },
+                    )
 
             return flows.FlowResponse(
                 version=req.version,
@@ -212,51 +240,67 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                 flow.reply(info_users)
 
         else:
-            info_users = ""
+            if res["screen"] == "edit_user_details":
+                for key, value in res.items():
+                    if key.startswith("input_name"):
+                        if value != "":
+                            repository.update_user_info(user_wa_id=res[f"phone_number_{key[-1]}"], name=value)
+                    elif key.startswith("input_phone"):
+                        if value != "":
+                            try:
+                                repository.update_user_info(user_wa_id=res[f"phone_number_{key[-1]}"], wa_id=value)
+                            except sqlalchemy.exc.IntegrityError:
+                                flow.reply("אי אפשר לשנות מספר למספר קיים")
 
-            for user in [
-                *(res.get("people_group_1") or []),
-                *(res.get("people_group_2") or []),
-                *(res.get("people_group_3") or []),
-                *(res.get("people_group_4") or []),
-                *(res.get("people_group_5") or []),
-            ]:
-                if repository.is_wa_user_exists(wa_id=user):
-                    match get_user:
-                        case modules.AdminOption.USER_PAY:
-                            repository.update_user_info(wa_id=user, is_pay=False)
-                        case modules.AdminOption.USER_NOT_PAY:
-                            repository.update_user_info(wa_id=user, is_pay=True)
-                        case modules.AdminOption.USER_IN_PROGRAM:
-                            repository.update_user_info(wa_id=user, in_program=False)
-                        case modules.AdminOption.USER_NOT_IN_PROGRAM:
-                            repository.update_user_info(wa_id=user, in_program=True)
-                        case modules.AdminOption.REMOVE_ADMIN:
-                            if user in settings.ADMINS.split(","):
-                                info_users += (
-                                    f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
-                                    f" מניהול בגלל שהוא מנהל ראשי\n"
-                                )
-                            else:
-                                repository.update_user_info(wa_id=user, admin=False)
+                flow.reply("בוצע")
+                return
 
-                        case modules.AdminOption.ADD_ADMIN:
-                            repository.update_user_info(wa_id=user, admin=True)
+            else:
+                info_users = ""
 
-                        case modules.AdminOption.REMOVE_USERS:
-                            if user in settings.ADMINS.split(","):
-                                info_users += (
-                                    f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
-                                    f" בגלל שהוא מנהל ראשי\n"
-                                )
-                            else:
-                                repository.del_user(wa_id=wa_id)
+                for user in [
+                    *(res.get("people_group_1") or []),
+                    *(res.get("people_group_2") or []),
+                    *(res.get("people_group_3") or []),
+                    *(res.get("people_group_4") or []),
+                    *(res.get("people_group_5") or []),
+                ]:
+                    if repository.is_wa_user_exists(wa_id=user):
+                        match get_user:
+                            case modules.AdminOption.USER_PAY:
+                                repository.update_user_info(user_wa_id=user, is_pay=False)
+                            case modules.AdminOption.USER_NOT_PAY:
+                                repository.update_user_info(user_wa_id=user, is_pay=True)
+                            case modules.AdminOption.USER_IN_PROGRAM:
+                                repository.update_user_info(user_wa_id=user, in_program=False)
+                            case modules.AdminOption.USER_NOT_IN_PROGRAM:
+                                repository.update_user_info(user_wa_id=user, in_program=True)
+                            case modules.AdminOption.REMOVE_ADMIN:
+                                if user in settings.ADMINS.split(","):
+                                    info_users += (
+                                        f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
+                                        f" מניהול בגלל שהוא מנהל ראשי\n"
+                                    )
+                                else:
+                                    repository.update_user_info(user_wa_id=user, admin=False)
 
-                        case _:
-                            return
-                    info_users += (
-                        f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
-                    )
+                            case modules.AdminOption.ADD_ADMIN:
+                                repository.update_user_info(user_wa_id=user, admin=True)
 
-            if len(info_users) != 0:
-                flow.reply(info_users)
+                            case modules.AdminOption.REMOVE_USERS:
+                                if user in settings.ADMINS.split(","):
+                                    info_users += (
+                                        f"לא ניתן להסיר את {repository.get_wa_user_by_wa_id(wa_id=user).name}"
+                                        f" בגלל שהוא מנהל ראשי\n"
+                                    )
+                                else:
+                                    repository.del_user(wa_id=wa_id)
+
+                            case _:
+                                return
+                        info_users += (
+                            f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
+                        )
+
+                if len(info_users) != 0:
+                    flow.reply(info_users)

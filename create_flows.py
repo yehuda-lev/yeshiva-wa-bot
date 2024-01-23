@@ -31,11 +31,9 @@ managing_dates_events_and_users = types.FlowJSON(
     data_api_version=utils.Version.FLOW_DATA_API,
     routing_model={
         "choose_date_and_type": ["choose_people"],
-        # "user_details": ["choose_people", "user_details_edit"],
-        # "user_details_edit": [""],
+        "choose_people": ["edit_user_details"],
         "user_details": ["choose_people"],
-        # "choose_people": ["user_details", "user_details_edit", "choose_date_and_type"]
-        "choose_people": ["user_details_edit"]
+        "edit_user_details": []
     },
     screens=[
         flows.Screen(
@@ -100,6 +98,7 @@ managing_dates_events_and_users = types.FlowJSON(
                                         "event_type": event_type.form_ref,
                                         "date": date.form_ref,
                                         "my_flow_token": my_flow_token.data_key,
+                                        "screen": "choose_date_and_type",
                                     },
                                 ),
                             ),
@@ -191,20 +190,23 @@ managing_dates_events_and_users = types.FlowJSON(
                                 visible=data_is_group_5_visible.data_key,
                             ),
                             flows.Footer(
-                                label="סיום",
+                                label="המשך",
                                 on_click_action=flows.Action(
                                     name=flows.FlowActionType.DATA_EXCHANGE,
                                     payload={
                                         "event_type": event_type.data_key,
                                         "date": date.data_key,
+
                                         "people_group_1": people_group_1.form_ref,
                                         "people_group_2": people_group_2.form_ref,
                                         "people_group_3": people_group_3.form_ref,
                                         "people_group_4": people_group_4.form_ref,
                                         "people_group_5": people_group_5.form_ref,
+
                                         "data_type_get_user": data_type_get_user.data_key,
                                         "data_get_user": data_get_user.data_key,
                                         "my_flow_token": my_flow_token.data_key,
+                                        "screen": "choose_people",
                                     },
                                 ),
                             ),
@@ -265,6 +267,7 @@ managing_dates_events_and_users = types.FlowJSON(
                                         "get_user": get_user.form_ref,
                                         "type_get_user": type_get_user.form_ref,
                                         "my_flow_token": my_flow_token.data_key,
+                                        "screen": "user_details",
                                     },
                                 ),
                             ),
@@ -281,70 +284,73 @@ managing_dates_events_and_users = types.FlowJSON(
                 my_flow_token := flows.ScreenData(
                     key="my_flow_token", example="add_event"
                 ),
-                get_text_1 := flows.ScreenData(
-                    key="get_text_1", example="אנא שנה את השם של יהודה לב"
+                get_caption_text_1 := flows.ScreenData(
+                    key="get_caption_text_1", example="אנא שנה את השם של יהודה לב"
                 ),
                 get_init_value_text_1 := flows.ScreenData(
                     key="get_init_value_text_1", example="יהודה לב"
                 ),
-                get_phone_1 := flows.ScreenData(
-                    key="get_phone_1", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                get_caption_phone_1 := flows.ScreenData(
+                    key="get_caption_phone_1", example="אנא שנה את המספר של יהודה לב מ 9721111"
                 ),
                 get_init_value_phone_1 := flows.ScreenData(
-                    key="get_init_value_phone_1", example=9721111
+                    key="get_init_value_phone_1", example="9721111"
                 ),
                 is_input_1_visible := flows.ScreenData(
                     key="is_input_1_visible", example=True
                 ),
 
-                get_text_2 := flows.ScreenData(
-                    key="get_text_2", example="אנא שנה את השם של יהודה לב"
+                get_caption_text_2 := flows.ScreenData(
+                    key="get_caption_text_2", example="אנא שנה את השם של יהודה לב"
                 ),
                 get_init_value_text_2 := flows.ScreenData(
                     key="get_init_value_text_2", example="יהודה לב"
                 ),
-                get_phone_2 := flows.ScreenData(
-                    key="get_phone_2", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                get_caption_phone_2 := flows.ScreenData(
+                    key="get_caption_phone_2", example="אנא שנה את המספר של יהודה לב מ 9721111"
                 ),
                 get_init_value_phone_2 := flows.ScreenData(
-                    key="get_init_value_phone_2", example=9721111
+                    key="get_init_value_phone_2", example="9721111"
                 ),
                 is_input_2_visible := flows.ScreenData(
                     key="is_input_2_visible", example=True
                 ),
 
-                get_text_3 := flows.ScreenData(
-                    key="get_text_3", example="אנא שנה את השם של יהודה לב"
+                get_caption_text_3 := flows.ScreenData(
+                    key="get_caption_text_3", example="אנא שנה את השם של יהודה לב"
                 ),
                 get_init_value_text_3 := flows.ScreenData(
                     key="get_init_value_text_3", example="יהודה לב"
                 ),
-                get_phone_3 := flows.ScreenData(
-                    key="get_phone_3", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                get_caption_phone_3 := flows.ScreenData(
+                    key="get_caption_phone_3", example="אנא שנה את המספר של יהודה לב מ 9721111"
                 ),
                 get_init_value_phone_3 := flows.ScreenData(
-                    key="get_init_value_phone_3", example=9721111
+                    key="get_init_value_phone_3", example="9721111"
                 ),
                 is_input_3_visible := flows.ScreenData(
                     key="is_input_3_visible", example=True
                 ),
 
-                get_text_4 := flows.ScreenData(
-                    key="get_text_4", example="אנא שנה את השם של יהודה לב"
+                get_caption_text_4 := flows.ScreenData(
+                    key="get_caption_text_4", example="אנא שנה את השם של יהודה לב"
                 ),
                 get_init_value_text_4 := flows.ScreenData(
                     key="get_init_value_text_4", example="יהודה לב"
                 ),
-                get_phone_4 := flows.ScreenData(
-                    key="get_phone_4", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                get_caption_phone_4 := flows.ScreenData(
+                    key="get_caption_phone_4", example="אנא שנה את המספר של יהודה לב מ 9721111"
                 ),
                 get_init_value_phone_4 := flows.ScreenData(
-                    key="get_init_value_phone_4", example=9721111
+                    key="get_init_value_phone_4", example="9721111"
                 ),
                 is_input_4_visible := flows.ScreenData(
                     key="is_input_4_visible", example=True
                 ),
-
+                data_type_get_user := flows.ScreenData(
+                    key="data_type_get_user", example=["get_info"]
+                ),
+                data_get_user := flows.ScreenData(key="data_get_user", example="12"),
             ],
             layout=flows.Layout(
                 type=flows.LayoutType.SINGLE_COLUMN,
@@ -352,80 +358,138 @@ managing_dates_events_and_users = types.FlowJSON(
                     flows.Form(
                         name="form",
                         children=[
+                            flows.TextSubheading(
+                                text=get_caption_text_1.data_key,
+                                visible=is_input_1_visible.data_key
+                            ),
                             input_name_1 := flows.TextInput(
                                 name="input_name_1",
-                                label=get_text_1.data_key,
+                                label="שנה את השם",
+                                min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_1.data_key,
                                 visible=is_input_1_visible.data_key
                             ),
+                            flows.TextSubheading(
+                                text=get_caption_phone_1.data_key,
+                                visible=is_input_1_visible.data_key
+                            ),
                             input_phone_1 := flows.TextInput(
                                 name="input_phone_1",
-                                label=get_phone_1.data_key,
+                                label="שנה את המספר",
+                                min_chars=12,
+                                max_chars=12,
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_1.data_key,
                                 visible=is_input_1_visible.data_key
                             ),
 
+                            flows.TextSubheading(
+                                text=get_caption_text_2.data_key,
+                                visible=is_input_2_visible.data_key
+                            ),
                             input_name_2 := flows.TextInput(
                                 name="input_name_2",
-                                label=get_text_2.data_key,
+                                label="שנה את השם",
+                                min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_2.data_key,
                                 visible=is_input_2_visible.data_key
                             ),
-                            input_phone_2 := flows.TextInput(
-                                name="input_phone_2",
-                                label=get_phone_2.data_key,
-                                input_type=flows.InputType.PHONE,
-                                init_value=get_init_value_phone_2.data_key,
+                            flows.TextSubheading(
+                                text=get_caption_phone_2.data_key,
                                 visible=is_input_2_visible.data_key
                             ),
+                            input_phone_2 := flows.TextInput(
+                                name="input_phone_2",
+                                label="שנה את המספר",
+                                min_chars=12,
+                                max_chars=12,
+                                helper_text="נא לכתוב בפורמט 972..",
+                                input_type=flows.InputType.PHONE,
+                                init_value=get_init_value_phone_2.data_key,
+                                visible=is_input_2_visible.data_key,
+                            ),
 
+                            flows.TextSubheading(
+                                text=get_caption_text_3.data_key,
+                                visible=is_input_3_visible.data_key
+                            ),
                             input_name_3 := flows.TextInput(
                                 name="input_name_3",
-                                label=get_text_3.data_key,
+                                label="שנה את השם",
+                                min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_3.data_key,
                                 visible=is_input_3_visible.data_key
                             ),
+                            flows.TextSubheading(
+                                text=get_caption_phone_3.data_key,
+                                visible=is_input_3_visible.data_key
+                            ),
                             input_phone_3 := flows.TextInput(
                                 name="input_phone_3",
-                                label=get_phone_3.data_key,
+                                label="שנה את המספר",
+                                min_chars=12,
+                                max_chars=12,
+                                helper_text="נא לכתוב בפורמט 972..",
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_3.data_key,
                                 visible=is_input_3_visible.data_key
                             ),
+
+                            flows.TextSubheading(
+                                text=get_caption_text_4.data_key,
+                                visible=is_input_4_visible.data_key
+                            ),
                             input_name_4 := flows.TextInput(
                                 name="input_name_4",
-                                label=get_text_4.data_key,
+                                label="שנה את השם",
+                                min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_4.data_key,
                                 visible=is_input_4_visible.data_key
                             ),
+                            flows.TextSubheading(
+                                text=get_caption_phone_4.data_key,
+                                visible=is_input_4_visible.data_key
+                            ),
                             input_phone_4 := flows.TextInput(
                                 name="input_phone_4",
-                                label=get_phone_4.data_key,
+                                label="שנה את המספר",
+                                min_chars=12,
+                                max_chars=12,
+                                helper_text="נא לכתוב בפורמט 972..",
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_4.data_key,
                                 visible=is_input_4_visible.data_key
                             ),
 
                             flows.Footer(
-                                label="המשך",
+                                label="סיום",
                                 on_click_action=flows.Action(
                                     name=flows.FlowActionType.COMPLETE,
                                     payload={
+                                        "phone_number_1": get_init_value_phone_1.data_key,
                                         "input_name_1": input_name_1.form_ref,
                                         "input_phone_1": input_phone_1.form_ref,
+
+                                        "phone_number_2": get_init_value_phone_2.data_key,
                                         "input_name_2": input_name_2.form_ref,
                                         "input_phone_2": input_phone_2.form_ref,
+
+                                        "phone_number_3": get_init_value_phone_3.data_key,
                                         "input_name_3": input_name_3.form_ref,
                                         "input_phone_3": input_phone_3.form_ref,
+
+                                        "phone_number_4": get_init_value_phone_4.data_key,
                                         "input_name_4": input_name_4.form_ref,
                                         "input_phone_4": input_phone_4.form_ref,
 
                                         "my_flow_token": my_flow_token.data_key,
+                                        "screen": "edit_user_details",
+                                        "data_type_get_user": data_type_get_user.data_key,
+                                        "data_get_user": data_get_user.data_key,
                                     },
                                 ),
                             ),
@@ -440,18 +504,18 @@ managing_dates_events_and_users = types.FlowJSON(
 # print(json.dumps(customer_satisfaction_survey.to_dict()))
 # pprint(managing_dates_events_and_users)
 
-try:
-    edit_flow = wa.update_flow_json(
-        flow_id=flow_id,
-        flow_json=managing_dates_events_and_users
-    )
-    if isinstance(edit_flow[1][0], flows.FlowValidationError):
-        pprint(edit_flow[1][0])
-except IndexError:
-    print("Flow updated successfully")
-except errors.FlowUpdatingError:
-    print("Error updating flow")
-    pprint(wa.get_flow(flow_id=flow_id).validation_errors)
+# try:
+#     edit_flow = wa.update_flow_json(
+#         flow_id=flow_id,
+#         flow_json=managing_dates_events_and_users
+#     )
+#     if isinstance(edit_flow[1][0], flows.FlowValidationError):
+#         pprint(edit_flow[1][0])
+# except IndexError:
+#     print("Flow updated successfully")
+# except errors.FlowUpdatingError:
+#     print("Error updating flow")
+#     pprint(wa.get_flow(flow_id=flow_id).validation_errors)
 
 # update_flow_metadate = wa.update_flow_metadata(
 #     flow_id=flow_id,

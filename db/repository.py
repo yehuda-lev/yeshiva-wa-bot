@@ -78,9 +78,9 @@ def create_user(*, wa_id: str, name: str, admin: bool = False) -> int:
         return wa_user.id
 
 
-def update_user_info(*, wa_id: str, **kwargs):
+def update_user_info(*, user_wa_id: str, **kwargs):
     with get_session() as session:
-        session.query(WaUser).filter(WaUser.wa_id == wa_id).update(kwargs)
+        session.query(WaUser).filter(WaUser.wa_id == user_wa_id).update(kwargs)
         session.commit()
 
 
