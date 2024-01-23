@@ -19,9 +19,11 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
 
     flow_token = req.flow_token
 
-    if (flow_token.startswith("get_event_specific")
-            or flow_token.startswith("add_events")
-            or flow_token.startswith("remove_events")):
+    if (
+        flow_token.startswith("get_event_specific")
+        or flow_token.startswith("add_events")
+        or flow_token.startswith("remove_events")
+    ):
         return flows.FlowResponse(
             version=req.version,
             close_flow=True,
@@ -81,7 +83,6 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
             res = req.data
             if res["data_get_user"] == modules.AdminOption.GET_ALL_USERS:
                 if res["data_type_get_user"][0] == "edit_info":
-
                     list_users = [
                         *(res.get("people_group_1") or []),
                         *(res.get("people_group_2") or []),
@@ -95,12 +96,12 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
                     data_users = {}
                     for num in range(1, 5):
                         data_users.update(
-                            **
-                            helpers.get_data_screen_edit_users_details(input_num=num, user_id=list_users[num - 1])
+                            **helpers.get_data_screen_edit_users_details(
+                                input_num=num, user_id=list_users[num - 1]
+                            )
                         )
                     return flows.FlowResponse(
                         version=req.version,
-
                         close_flow=False,
                         screen="edit_user_details",
                         flow_token=req.flow_token,
@@ -244,11 +245,16 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                 for key, value in res.items():
                     if key.startswith("input_name"):
                         if value != "":
-                            repository.update_user_info(user_wa_id=res[f"phone_number_{key[-1]}"], name=value)
+                            repository.update_user_info(
+                                user_wa_id=res[f"phone_number_{key[-1]}"], name=value
+                            )
                     elif key.startswith("input_phone"):
                         if value != "":
                             try:
-                                repository.update_user_info(user_wa_id=res[f"phone_number_{key[-1]}"], wa_id=value)
+                                repository.update_user_info(
+                                    user_wa_id=res[f"phone_number_{key[-1]}"],
+                                    wa_id=value,
+                                )
                             except sqlalchemy.exc.IntegrityError:
                                 flow.reply("אי אפשר לשנות מספר למספר קיים")
 
@@ -268,13 +274,21 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                     if repository.is_wa_user_exists(wa_id=user):
                         match get_user:
                             case modules.AdminOption.USER_PAY:
-                                repository.update_user_info(user_wa_id=user, is_pay=False)
+                                repository.update_user_info(
+                                    user_wa_id=user, is_pay=False
+                                )
                             case modules.AdminOption.USER_NOT_PAY:
-                                repository.update_user_info(user_wa_id=user, is_pay=True)
+                                repository.update_user_info(
+                                    user_wa_id=user, is_pay=True
+                                )
                             case modules.AdminOption.USER_IN_PROGRAM:
-                                repository.update_user_info(user_wa_id=user, in_program=False)
+                                repository.update_user_info(
+                                    user_wa_id=user, in_program=False
+                                )
                             case modules.AdminOption.USER_NOT_IN_PROGRAM:
-                                repository.update_user_info(user_wa_id=user, in_program=True)
+                                repository.update_user_info(
+                                    user_wa_id=user, in_program=True
+                                )
                             case modules.AdminOption.REMOVE_ADMIN:
                                 if user in settings.ADMINS.split(","):
                                     info_users += (
@@ -282,7 +296,9 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                                         f" מניהול בגלל שהוא מנהל ראשי\n"
                                     )
                                 else:
-                                    repository.update_user_info(user_wa_id=user, admin=False)
+                                    repository.update_user_info(
+                                        user_wa_id=user, admin=False
+                                    )
 
                             case modules.AdminOption.ADD_ADMIN:
                                 repository.update_user_info(user_wa_id=user, admin=True)

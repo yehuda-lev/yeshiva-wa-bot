@@ -33,7 +33,7 @@ managing_dates_events_and_users = types.FlowJSON(
         "choose_date_and_type": ["choose_people"],
         "choose_people": ["edit_user_details"],
         "user_details": ["choose_people"],
-        "edit_user_details": []
+        "edit_user_details": [],
     },
     screens=[
         flows.Screen(
@@ -196,13 +196,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                     payload={
                                         "event_type": event_type.data_key,
                                         "date": date.data_key,
-
                                         "people_group_1": people_group_1.form_ref,
                                         "people_group_2": people_group_2.form_ref,
                                         "people_group_3": people_group_3.form_ref,
                                         "people_group_4": people_group_4.form_ref,
                                         "people_group_5": people_group_5.form_ref,
-
                                         "data_type_get_user": data_type_get_user.data_key,
                                         "data_get_user": data_get_user.data_key,
                                         "my_flow_token": my_flow_token.data_key,
@@ -249,13 +247,13 @@ managing_dates_events_and_users = types.FlowJSON(
                                         id="get_info",
                                         title="קבלת פרטים",
                                         description="קבלת פרטים על משתמשים.\n"
-                                                    "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע",
+                                        "לדוגמה, קבלת כל המשתמשים שמשתתפים במבצע",
                                     ),
                                     flows.DataSource(
                                         id="edit_info",
                                         title="שינוי פרטים",
                                         description="עריכת פרטים של משתמשים.\n"
-                                                    "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע",
+                                        "לדוגמה, שינוי משתמשים שלא במבצע והגדרתם למשתתפים במבצע",
                                     ),
                                 ],
                             ),
@@ -291,7 +289,8 @@ managing_dates_events_and_users = types.FlowJSON(
                     key="get_init_value_text_1", example="יהודה לב"
                 ),
                 get_caption_phone_1 := flows.ScreenData(
-                    key="get_caption_phone_1", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                    key="get_caption_phone_1",
+                    example="אנא שנה את המספר של יהודה לב מ 9721111",
                 ),
                 get_init_value_phone_1 := flows.ScreenData(
                     key="get_init_value_phone_1", example="9721111"
@@ -299,7 +298,6 @@ managing_dates_events_and_users = types.FlowJSON(
                 is_input_1_visible := flows.ScreenData(
                     key="is_input_1_visible", example=True
                 ),
-
                 get_caption_text_2 := flows.ScreenData(
                     key="get_caption_text_2", example="אנא שנה את השם של יהודה לב"
                 ),
@@ -307,7 +305,8 @@ managing_dates_events_and_users = types.FlowJSON(
                     key="get_init_value_text_2", example="יהודה לב"
                 ),
                 get_caption_phone_2 := flows.ScreenData(
-                    key="get_caption_phone_2", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                    key="get_caption_phone_2",
+                    example="אנא שנה את המספר של יהודה לב מ 9721111",
                 ),
                 get_init_value_phone_2 := flows.ScreenData(
                     key="get_init_value_phone_2", example="9721111"
@@ -315,7 +314,6 @@ managing_dates_events_and_users = types.FlowJSON(
                 is_input_2_visible := flows.ScreenData(
                     key="is_input_2_visible", example=True
                 ),
-
                 get_caption_text_3 := flows.ScreenData(
                     key="get_caption_text_3", example="אנא שנה את השם של יהודה לב"
                 ),
@@ -323,7 +321,8 @@ managing_dates_events_and_users = types.FlowJSON(
                     key="get_init_value_text_3", example="יהודה לב"
                 ),
                 get_caption_phone_3 := flows.ScreenData(
-                    key="get_caption_phone_3", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                    key="get_caption_phone_3",
+                    example="אנא שנה את המספר של יהודה לב מ 9721111",
                 ),
                 get_init_value_phone_3 := flows.ScreenData(
                     key="get_init_value_phone_3", example="9721111"
@@ -331,7 +330,6 @@ managing_dates_events_and_users = types.FlowJSON(
                 is_input_3_visible := flows.ScreenData(
                     key="is_input_3_visible", example=True
                 ),
-
                 get_caption_text_4 := flows.ScreenData(
                     key="get_caption_text_4", example="אנא שנה את השם של יהודה לב"
                 ),
@@ -339,7 +337,8 @@ managing_dates_events_and_users = types.FlowJSON(
                     key="get_init_value_text_4", example="יהודה לב"
                 ),
                 get_caption_phone_4 := flows.ScreenData(
-                    key="get_caption_phone_4", example="אנא שנה את המספר של יהודה לב מ 9721111"
+                    key="get_caption_phone_4",
+                    example="אנא שנה את המספר של יהודה לב מ 9721111",
                 ),
                 get_init_value_phone_4 := flows.ScreenData(
                     key="get_init_value_phone_4", example="9721111"
@@ -360,7 +359,7 @@ managing_dates_events_and_users = types.FlowJSON(
                         children=[
                             flows.TextSubheading(
                                 text=get_caption_text_1.data_key,
-                                visible=is_input_1_visible.data_key
+                                visible=is_input_1_visible.data_key,
                             ),
                             input_name_1 := flows.TextInput(
                                 name="input_name_1",
@@ -368,11 +367,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_1.data_key,
-                                visible=is_input_1_visible.data_key
+                                visible=is_input_1_visible.data_key,
                             ),
                             flows.TextSubheading(
                                 text=get_caption_phone_1.data_key,
-                                visible=is_input_1_visible.data_key
+                                visible=is_input_1_visible.data_key,
                             ),
                             input_phone_1 := flows.TextInput(
                                 name="input_phone_1",
@@ -381,12 +380,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 max_chars=12,
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_1.data_key,
-                                visible=is_input_1_visible.data_key
+                                visible=is_input_1_visible.data_key,
                             ),
-
                             flows.TextSubheading(
                                 text=get_caption_text_2.data_key,
-                                visible=is_input_2_visible.data_key
+                                visible=is_input_2_visible.data_key,
                             ),
                             input_name_2 := flows.TextInput(
                                 name="input_name_2",
@@ -394,11 +392,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_2.data_key,
-                                visible=is_input_2_visible.data_key
+                                visible=is_input_2_visible.data_key,
                             ),
                             flows.TextSubheading(
                                 text=get_caption_phone_2.data_key,
-                                visible=is_input_2_visible.data_key
+                                visible=is_input_2_visible.data_key,
                             ),
                             input_phone_2 := flows.TextInput(
                                 name="input_phone_2",
@@ -410,10 +408,9 @@ managing_dates_events_and_users = types.FlowJSON(
                                 init_value=get_init_value_phone_2.data_key,
                                 visible=is_input_2_visible.data_key,
                             ),
-
                             flows.TextSubheading(
                                 text=get_caption_text_3.data_key,
-                                visible=is_input_3_visible.data_key
+                                visible=is_input_3_visible.data_key,
                             ),
                             input_name_3 := flows.TextInput(
                                 name="input_name_3",
@@ -421,11 +418,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_3.data_key,
-                                visible=is_input_3_visible.data_key
+                                visible=is_input_3_visible.data_key,
                             ),
                             flows.TextSubheading(
                                 text=get_caption_phone_3.data_key,
-                                visible=is_input_3_visible.data_key
+                                visible=is_input_3_visible.data_key,
                             ),
                             input_phone_3 := flows.TextInput(
                                 name="input_phone_3",
@@ -435,12 +432,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 helper_text="נא לכתוב בפורמט 972..",
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_3.data_key,
-                                visible=is_input_3_visible.data_key
+                                visible=is_input_3_visible.data_key,
                             ),
-
                             flows.TextSubheading(
                                 text=get_caption_text_4.data_key,
-                                visible=is_input_4_visible.data_key
+                                visible=is_input_4_visible.data_key,
                             ),
                             input_name_4 := flows.TextInput(
                                 name="input_name_4",
@@ -448,11 +444,11 @@ managing_dates_events_and_users = types.FlowJSON(
                                 min_chars=4,
                                 input_type=flows.InputType.TEXT,
                                 init_value=get_init_value_text_4.data_key,
-                                visible=is_input_4_visible.data_key
+                                visible=is_input_4_visible.data_key,
                             ),
                             flows.TextSubheading(
                                 text=get_caption_phone_4.data_key,
-                                visible=is_input_4_visible.data_key
+                                visible=is_input_4_visible.data_key,
                             ),
                             input_phone_4 := flows.TextInput(
                                 name="input_phone_4",
@@ -462,9 +458,8 @@ managing_dates_events_and_users = types.FlowJSON(
                                 helper_text="נא לכתוב בפורמט 972..",
                                 input_type=flows.InputType.PHONE,
                                 init_value=get_init_value_phone_4.data_key,
-                                visible=is_input_4_visible.data_key
+                                visible=is_input_4_visible.data_key,
                             ),
-
                             flows.Footer(
                                 label="סיום",
                                 on_click_action=flows.Action(
@@ -473,19 +468,15 @@ managing_dates_events_and_users = types.FlowJSON(
                                         "phone_number_1": get_init_value_phone_1.data_key,
                                         "input_name_1": input_name_1.form_ref,
                                         "input_phone_1": input_phone_1.form_ref,
-
                                         "phone_number_2": get_init_value_phone_2.data_key,
                                         "input_name_2": input_name_2.form_ref,
                                         "input_phone_2": input_phone_2.form_ref,
-
                                         "phone_number_3": get_init_value_phone_3.data_key,
                                         "input_name_3": input_name_3.form_ref,
                                         "input_phone_3": input_phone_3.form_ref,
-
                                         "phone_number_4": get_init_value_phone_4.data_key,
                                         "input_name_4": input_name_4.form_ref,
                                         "input_phone_4": input_phone_4.form_ref,
-
                                         "my_flow_token": my_flow_token.data_key,
                                         "screen": "edit_user_details",
                                         "data_type_get_user": data_type_get_user.data_key,
@@ -526,6 +517,9 @@ managing_dates_events_and_users = types.FlowJSON(
 #     public_key=settings.PUBLIC_KEY
 # )
 # print(set_business_public_key)
+
+publish_flow = wa.publish_flow(flow_id=flow_id)
+print(publish_flow)
 
 # pprint(wa.get_flow(flow_id=flow_id))
 # pprint(wa.get_flow_assets(flow_id))

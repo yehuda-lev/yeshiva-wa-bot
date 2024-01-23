@@ -25,7 +25,7 @@ HANDLERS = [
         filters.text,
         filters.any_(
             filters.text.command("start", prefixes="/"),
-            filters.not_(filters.text.is_command)
+            filters.not_(filters.text.is_command),
         ),
     ),
     handlers.CallbackButtonHandler(

@@ -95,7 +95,6 @@ def replace_bool_to_he(param: bool) -> str:
 
 
 def get_data_screen_edit_users_details(input_num: int, user_id: str = None) -> dict:
-
     get_caption_text = ""
     get_init_value_text = ""
     get_caption_phone = ""
@@ -116,5 +115,5 @@ def get_data_screen_edit_users_details(input_num: int, user_id: str = None) -> d
         f"get_init_value_text_{input_num}": get_init_value_text,
         f"get_caption_phone_{input_num}": get_caption_phone,
         f"get_init_value_phone_{input_num}": get_init_value_phone,
-        f"is_input_{input_num}_visible": is_input_visible
+        f"is_input_{input_num}_visible": is_input_visible,
     }

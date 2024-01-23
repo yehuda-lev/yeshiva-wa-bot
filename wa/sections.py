@@ -86,9 +86,9 @@ def add_and_remove_events(
 
     flow_token = f'{"add" if is_create else "remove"}_events_{cbs.from_user.wa_id}'
     cbs.reply(
-        text=f"נא ללחוץ על הכפתור למטה בכדי{'להוסיף' if is_create else 'להסיר'} אירועים",
+        text=f"נא ללחוץ על הכפתור למטה בכדי {'להוסיף' if is_create else 'להסיר'} אירועים",
         buttons=types.FlowButton(
-            title="open",
+            title="פתח",
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=flow_token,
@@ -187,7 +187,7 @@ def handle_user_details(
 def send_help(_: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionAdmin]):
     cbs.mark_as_read()
     text = """*עזרה*\n
-    עד יום חמישי הסמוך לטיסה יש 10 שבועות שהם:
+עד יום חמישי הסמוך לטיסה יש 10 שבועות שהם:
 50 תפילות שחרית
 50 סדרי א’
 40 סדרי ב’ 
