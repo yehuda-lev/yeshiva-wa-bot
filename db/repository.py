@@ -1,8 +1,13 @@
+import logging
 import datetime
 from sqlalchemy import exists, func
 
 from db.tables import get_session, WaUser, Event
 from data import modules
+
+
+_logger = logging.getLogger(__name__)
+
 
 #  wa user
 
@@ -63,6 +68,7 @@ def create_user(*, wa_id: str, name: str, admin: bool = False) -> int:
     Returns:
          id of user
     """
+    _logger.info(f"create_user: wa_id: {wa_id}, name: {name}, admin: {admin}")
 
     with get_session() as session:
         wa_user = WaUser(
@@ -79,12 +85,31 @@ def create_user(*, wa_id: str, name: str, admin: bool = False) -> int:
 
 
 def update_user_info(*, user_wa_id: str, **kwargs):
+    """
+    Update wa user info
+    Args:
+        user_wa_id: The WaUser ID
+        **kwargs: The info to update
+    Returns:
+         None
+    """
+    _logger.info(f"update_user_info: user_wa_id: {user_wa_id}, kwargs: {kwargs}")
+
     with get_session() as session:
         session.query(WaUser).filter(WaUser.wa_id == user_wa_id).update(kwargs)
         session.commit()
 
 
 def del_user(*, wa_id: str):
+    """
+    Del wa user
+    Args:
+        wa_id: The WaUser ID
+    Returns:
+         None
+    """
+    _logger.info(f"del_user: wa_id: {wa_id}")
+
     with get_session() as session:
         session.query(WaUser).filter(WaUser.wa_id == wa_id).delete()
         session.commit()
@@ -133,6 +158,9 @@ def create_event(
     Returns:
          id of the event
     """
+    _logger.info(
+        f"create_event: type_event: {type_event}, date: {date}, wa_id: {wa_id}, added_by: {added_by}"
+    )
 
     with get_session() as session:
         user = session.query(WaUser).filter(WaUser.wa_id == wa_id).first()
@@ -157,6 +185,7 @@ def del_event(
     Returns:
          None
     """
+    _logger.info(f"del_event: wa_id: {wa_id}, type_event: {type_event}, date: {date}")
 
     with get_session() as session:
         user = session.query(WaUser).filter(WaUser.wa_id == wa_id).first()

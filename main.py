@@ -16,7 +16,7 @@ file_handler = logging.handlers.RotatingFileHandler(
 )
 file_handler.setLevel(logging.INFO)
 logging.basicConfig(
-    format="Time: %(asctime)s | Level: %(levelname)s | Module: %(module)s | Message: %(message)s",
+    format="Time: %(asctime)s | Level: %(levelname)s | Module: %(module)s | Func: %(funcname)s() Message: %(message)s",
     handlers=(console_handler, file_handler),
 )
 logging.getLogger().setLevel(logging.NOTSET)
