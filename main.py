@@ -12,11 +12,11 @@ from db import repository
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.ERROR)
 file_handler = logging.handlers.RotatingFileHandler(
-    filename="bot.log", maxBytes=5 * (2**20), backupCount=1, mode="D"
+    filename="bot.log", maxBytes=5 * (2**20), backupCount=1, mode="D", encoding="utf-8"
 )
 file_handler.setLevel(logging.INFO)
 logging.basicConfig(
-    format="Time: %(asctime)s | Level: %(levelname)s | Module: %(module)s | Func: %(funcname)s() Message: %(message)s",
+    format="Time: %(asctime)s | Level: %(levelname)s | Module: %(module)s | Func: %(funcName)s() Message: %(message)s",
     handlers=(console_handler, file_handler),
 )
 logging.getLogger().setLevel(logging.NOTSET)
