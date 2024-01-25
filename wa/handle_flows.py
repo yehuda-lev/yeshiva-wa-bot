@@ -24,14 +24,15 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
         or flow_token.startswith("add_events")
         or flow_token.startswith("remove_events")
     ):
-        return flows.FlowResponse(
-            version=req.version,
-            close_flow=True,
-            flow_token=req.flow_token,
-            data={
-                **req.data,
-            },
-        )
+        if flow_token.startswith("get_event_specific") or req.screen == "choose_people":
+            return flows.FlowResponse(
+                version=req.version,
+                close_flow=True,
+                flow_token=req.flow_token,
+                data={
+                    **req.data,
+                },
+            )
 
     elif flow_token.startswith("get_user_details"):
         if req.screen == "user_details":
@@ -120,19 +121,19 @@ def get_request_flow(_: WhatsApp, req: flows.FlowRequest) -> flows.FlowResponse 
                 },
             )
 
-    else:  # from screen `choose_date_and_type`
-        return flows.FlowResponse(
-            version=req.version,
-            close_flow=False,
-            flow_token=req.flow_token,
-            screen="choose_people",
-            data={
-                **req.data,
-                **helpers.get_data_users(filter_in_program=True),
-                "type_get_user": ["none"],
-                "get_user": "none",
-            },
-        )
+    # from screen `choose_date_and_type`
+    return flows.FlowResponse(
+        version=req.version,
+        close_flow=False,
+        flow_token=req.flow_token,
+        screen="choose_people",
+        data={
+            **req.data,
+            **helpers.get_data_users(filter_in_program=True),
+            "type_get_user": ["none"],
+            "get_user": "none",
+        },
+    )
 
 
 def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
