@@ -10,11 +10,13 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from data import modules
+from data import modules, utils
 
+
+settings = utils.get_settings()
 
 engine = create_engine(
-    url="sqlite:///db.sqlite",
+    url=settings.PATH_DATA_BASE,
     pool_size=20,
     max_overflow=10,
     pool_timeout=30,

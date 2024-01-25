@@ -514,12 +514,12 @@ managing_dates_events_and_users = types.FlowJSON(
 # print(update_flow_metadate)
 
 # set_business_public_key = wa.set_business_public_key(
-#     public_key=settings.PUBLIC_KEY
+#     public_key=open("public.pem").read()
 # )
 # print(set_business_public_key)
 
-publish_flow = wa.publish_flow(flow_id=flow_id)
-print(publish_flow)
+# publish_flow = wa.publish_flow(flow_id=flow_id)
+# print(publish_flow)
 
 # pprint(wa.get_flow(flow_id=flow_id))
 # pprint(wa.get_flow_assets(flow_id))

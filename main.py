@@ -36,7 +36,7 @@ wa = WhatsApp(
     webhook_endpoint=settings.WEBHOOK_ENDPOINT,
     app_id=int(settings.APP_ID),
     app_secret=settings.APP_SECRET,
-    business_private_key=settings.PRIVATE_KEY,
+    business_private_key=open("private.pem").read(),
     business_private_key_password=settings.PASSWORD_PRIVATE_KEY,
     verify_timeout=10,
 )
