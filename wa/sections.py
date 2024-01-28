@@ -55,11 +55,13 @@ def get_count_event(
 def get_event_specific(
     _: WhatsApp, cbs: types.CallbackSelection[modules.ChooseOptionUser]
 ):
+    cbs.mark_as_read()
+
     flow_token = f"get_event_specific_{cbs.from_user.wa_id}"
     cbs.reply(
-        text="יצירת אירוע",
+        text="🔎 חיפוש לפי יום",
         buttons=types.FlowButton(
-            title="יצירת אירוע",
+            title="חיפוש",
             flow_id=settings.FLOW_ID,
             flow_action_type=flows.FlowActionType.NAVIGATE,
             flow_token=flow_token,
