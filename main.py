@@ -45,6 +45,14 @@ wa = WhatsApp(
 @wa.on_message_status(filters.message_status.failed)
 def on_failed_message(_: WhatsApp, status: types.MessageStatus):
     wa_id = status.from_user.wa_id
+
+    # Message Undeliverable
+    if status.error == 131026:
+        _logger.info(f"Message undeliverable to {wa_id}")
+        text = "ההודעה אינה נתמכת במכשירים מקושרים/ווצאפ ווב/טאבלטים"
+        status.reply_text(text=text)
+        return
+
     _logger.error(f"Message failed to send to {wa_id} with error: {status.error}")
 
 
