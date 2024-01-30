@@ -311,10 +311,13 @@ def get_completion_flow(_: WhatsApp, flow: types.FlowCompletion):
                                         f" בגלל שהוא מנהל ראשי\n"
                                     )
                                 else:
-                                    repository.del_user(wa_id=wa_id)
+                                    repository.del_user(wa_id=user)
 
                             case _:
                                 return
+                        if get_user == modules.AdminOption.REMOVE_USERS:
+                            flow.reply("בוצע")
+                            return
                         info_users += (
                             f"{repository.get_wa_user_by_wa_id(wa_id=user).name}\n"
                         )
