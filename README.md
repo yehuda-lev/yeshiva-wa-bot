@@ -7,6 +7,8 @@
 
 ### הבוט עושה שימוש עיקרי בפיצ'ר ה-[Flows](https://pywa.readthedocs.io/en/latest/content/flows/overview.html)
 
+[![לצפייה בסרטוון ביוטיוב](http://img.youtube.com/vi/OAinkmA9hZU/0.jpg)](https://youtu.be/OAinkmA9hZU?si=CdNNLuFLHsq7VWqB "בוט בווצאפ  - השטייגעניסט המעופף")
+
 
 
 # התקנה:
