@@ -1,5 +1,5 @@
 pywa==1.16.0
-cryptography==48.0.1
+cryptography
 uvicorn~=0.25.0
 fastapi~=0.109.1
 SQLAlchemy~=2.0.23
